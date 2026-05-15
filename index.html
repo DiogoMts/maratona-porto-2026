@@ -322,7 +322,7 @@
   <div class="week-content" id="weekContent"></div>
   <div style="text-align:center; padding: 16px;">
     <button onclick="exportData()" style="background:#0f3460; border:none; color:#eee; padding:12px 20px; border-radius:8px; font-size:0.9rem; cursor:pointer;">📤 Exportar progresso</button>
-    <div style="margin-top:12px; font-size:0.75rem; opacity:0.4;">v0.0.25</div>
+    <div style="margin-top:12px; font-size:0.75rem; opacity:0.4;">v0.0.34</div>
   </div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
@@ -584,21 +584,21 @@ const WORKOUT_DETAILS = {
 
 const STRENGTH_EXERCISES = {
   forca: [
-    {name:'1. Single-leg deadlift — 3x10/lado', detail:'Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).', link:'https://www.muscleandstrength.com/exercises/single-leg-romanian-deadlift'},
-    {name:'2. Step-ups (banco 30cm) — 3x10/lado', detail:'Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.', link:'https://liftmanual.com/step-up/'},
-    {name:'3. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.', link:'https://www.muscleandstrength.com/exercises/single-leg-glute-bridge'},
-    {name:'4. Calf raises (unilateral) — 3x10/lado', detail:'Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.', link:'https://www.muscleandstrength.com/exercises/standing-one-leg-calf-raise-with-dumbbell.html'},
+    {name:'1. Single-leg deadlift — 3x10/lado', detail:'Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).', link:'https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift'},
+    {name:'2. Step-ups (banco 30cm) — 3x10/lado', detail:'Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.', link:'https://fitbod.me/exercises/step-up'},
+    {name:'3. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.', link:'https://fitbod.me/exercises/single-leg-glute-bridge'},
+    {name:'4. Calf raises (unilateral) — 3x10/lado', detail:'Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.', link:'https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise'},
     {name:'5. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta, apertar abdominais e glúteos.', link:'https://liftmanual.com/front-plank/'},
-    {name:'6. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade. Anca não pode cair.', link:'https://www.fitfatherproject.com/side-plank-exercise/'}
+    {name:'6. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade. Anca não pode cair.', link:'https://fitnessvolt.com/side-plank/'}
   ],
   ativacao: [
-    {name:'1. Pontes de glúteo (bilateral) — 3x15', detail:'Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.', link:'https://www.sports-injury-physio.com/post/glute-bridge-exercises-4-variations-demonstrated'},
-    {name:'2. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Manter pélvis nivelada, não rodar.', link:'https://www.muscleandstrength.com/exercises/single-leg-glute-bridge'},
-    {name:'3. Clamshells com banda — 3x15/lado', detail:'Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.', link:'https://www.exerciselibrary.com/exercise/band-clam-shell/'},
-    {name:'4. Side-lying hip abduction — 3x12/lado', detail:'Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.', link:'https://liftmanual.com/side-lying-leg-raise/'},
-    {name:'5. Calf raises (bilateral) — 3x15', detail:'Gémeos — manutenção. Ritmo: 2s subir, 2s descer.', link:'https://www.muscleandstrength.com/exercises/standing-calf-raise.html'},
+    {name:'1. Pontes de glúteo (bilateral) — 3x15', detail:'Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.', link:'https://www.zing.coach/exercises/glute-bridges'},
+    {name:'2. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Manter pélvis nivelada, não rodar.', link:'https://www.zing.coach/exercises/single-leg-glute-bridges'},
+    {name:'3. Clamshells com banda — 3x15/lado', detail:'Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.', link:'https://www.zing.coach/exercises/band-clamshells'},
+    {name:'4. Side-lying hip abduction — 3x12/lado', detail:'Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.', link:'https://www.vissco.com/physiotherapy-exercise/side-lying-leg-lift-with-theraband/'},
+    {name:'5. Calf raises (bilateral) — 3x15', detail:'Gémeos — manutenção. Ritmo: 2s subir, 2s descer.', link:'https://exrx.net/WeightExercises/Gastrocnemius/BWStandingCalfRaise'},
     {name:'6. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta.', link:'https://liftmanual.com/front-plank/'},
-    {name:'7. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade.', link:'https://www.fitfatherproject.com/side-plank-exercise/'}
+    {name:'7. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade.', link:'https://fitnessvolt.com/side-plank/'}
   ]
 };
 
