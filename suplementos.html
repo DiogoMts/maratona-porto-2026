@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e94560">
+  <title>Maratona Porto 9 Novembro 2026</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; padding-bottom: 40px; }
+    .nav-toggle { position: fixed; top: 12px; left: 12px; z-index: 300; background: #0f3460; border: none; color: #eee; width: 36px; height: 36px; border-radius: 8px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .sidenav { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #16213e; z-index: 250; transition: left 0.3s ease; overflow-y: auto; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
+    .sidenav.open { left: 0; }
+    .sidenav-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 240; }
+    .sidenav-overlay.open { display: block; }
+    .sidenav-header { padding: 16px 20px; border-bottom: 1px solid #0f3460; margin-bottom: 8px; }
+    .sidenav-header h2 { font-size: 1rem; }
+    .sidenav-header p { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
+    .sidenav-section { padding: 8px 0; }
+    .sidenav-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.5; padding: 8px 20px 4px; }
+    .sidenav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 0.9rem; color: #eee; text-decoration: none; cursor: pointer; border-left: 3px solid transparent; }
+    .sidenav-item:hover { background: #0f3460; }
+    .sidenav-item.active { border-left-color: #e94560; background: #0f3460; }
+    .sidenav-item .nav-icon { width: 20px; text-align: center; }
+    header { background: linear-gradient(135deg, #e94560, #0f3460); padding: 20px 16px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    .content { padding: 12px; }
+    .week-chips { display: flex; gap: 6px; padding: 8px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .week-chips::-webkit-scrollbar { display: none; }
+    .chip { background: #0f3460; border: none; color: #eee; padding: 8px 14px; border-radius: 16px; font-size: 0.8rem; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+    .chip.active { background: #e94560; }
+    .week-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; }
+    .week-nav button { background: #0f3460; border: none; color: #eee; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+    .week-nav button:disabled { opacity: 0.3; cursor: default; }
+    .week-nav .title { text-align: center; }
+    .week-nav .title .main { font-size: 0.95rem; font-weight: 600; }
+    .week-nav .title .sub { font-size: 0.8rem; opacity: 0.7; }
+    .day-tabs { display: flex; gap: 4px; padding: 0 12px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .day-tabs::-webkit-scrollbar { display: none; }
+    .day-tab { background: #0f3460; border: none; color: #eee; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 44px; }
+    .day-tab.active { background: #e94560; }
+    .section-title { font-size: 0.95rem; color: #4ecca3; margin: 12px 0 8px; padding: 0 4px; }
+    .supp-card { background: #16213e; border-radius: 10px; padding: 12px 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; border-left: 4px solid #4ecca3; }
+    .supp-card.done { opacity: 0.5; }
+    .supp-card.done .supp-name { text-decoration: line-through; }
+    .supp-card.extra { border-left-color: #f9a825; }
+    .supp-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #555; background: transparent; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; color: transparent; font-size: 13px; }
+    .supp-check.checked { background: #4ecca3; border-color: #4ecca3; color: #1a1a2e; }
+    .supp-info { flex: 1; }
+    .supp-goal { font-size: 0.7rem; color: #4ecca3; background: #0f3460; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; align-self: center; }
+    .supp-note { font-size: 0.8rem; opacity: 0.6; margin-top: 6px; line-height: 1.5; font-style: italic; }
+    .supp-time { font-size: 0.75rem; opacity: 0.6; }
+    .supp-name { font-size: 0.9rem; font-weight: 600; }
+    .supp-detail { font-size: 0.8rem; opacity: 0.7; margin-top: 2px; }
+    .day-type-badge { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+    .day-type-badge.corrida { background: #4ecca3; color: #1a1a2e; }
+    .day-type-badge.strength { background: #00bcd4; color: #1a1a2e; }
+    .day-type-badge.descanso { background: #555; color: #eee; }
+    .day-type-badge.cross { background: #8bc34a; color: #1a1a2e; }
+  </style>
+</head>
+<body>
+  <button class="nav-toggle" onclick="toggleNav()">☰</button>
+  <div class="sidenav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+  <nav class="sidenav" id="sidenav">
+    <div class="sidenav-header">
+      <h2>🏃 Maratona Porto</h2>
+      <p>8 Novembro 2026 — Diogo Matos</p>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Navegação</div>
+      <div class="sidenav-item" onclick="window.location.href='index.html'"><span class="nav-icon">📋</span> Plano semanal</div>
+      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Força & Estabilidade (Seg)</div>
+      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Ativação & Proteção (Sex)</div>
+      <div class="sidenav-item active"><span class="nav-icon">💊</span> Suplementos</div>
+    </div>
+  </nav>
+  <header>
+    <h1>🏃 Maratona Porto 8 Nov 2026</h1>
+  </header>
+
+  <div class="week-chips" id="weekChips"></div>
+  <div class="week-nav">
+    <button id="prevBtn" onclick="prevWeek()">◀</button>
+    <div class="title">
+      <div class="main" id="weekTitle"></div>
+      <div class="sub" id="weekMeta"></div>
+    </div>
+    <button id="nextBtn" onclick="nextWeek()">▶</button>
+  </div>
+
+  <div class="day-tabs" id="dayTabs"></div>
+
+  <div class="content" id="dayContent"></div>
+
+  <script>
+// Day types per week (from training plan)
+// Types: 'strength','corrida','cross','descanso'
+const WEEK_DAYS = [
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','descanso','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','cross','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','strength','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','descanso','corrida','descanso'],
+  ['strength','corrida','corrida','corrida','descanso','corrida','descanso'],
+  ['descanso','corrida','corrida','corrida','descanso','corrida','descanso'],
+  ['descanso','corrida','corrida','corrida','descanso','descanso','corrida']
+];
+
+const DAY_NAMES = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+const DAY_SHORT = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+
+const SUPPS_BY_TYPE = {
+  corrida: [
+    {time:"5:30", name:"Colagénio 15g + Vitamina C 500mg", detail:"30 min antes da corrida", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30-60 min ANTES do treino para que os aminoácidos estejam disponíveis durante o exercício. Estudos mostram benefício para tendões e cartilagem quando combinado com vitamina C."},
+    {time:"Pós-treino", name:"Proteína Whey 25-30g", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Não causa retenção de água significativa. Ómega-3: anti-inflamatório, saúde articular."},
+    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Ideal medir 25(OH)D antes de suplementar. Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
+  ],
+  strength: [
+    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"30 min antes do treino", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30-60 min ANTES do treino para que os aminoácidos estejam disponíveis durante o exercício. Estudos mostram benefício para tendões e cartilagem quando combinado com vitamina C."},
+    {time:"Pós-treino", name:"Proteína Whey 25g", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Ómega-3: anti-inflamatório, saúde articular."},
+    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Ideal medir 25(OH)D antes de suplementar. Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
+  ],
+  cross: [
+    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"Manter rotina", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter mesmo sem impacto. O colagénio beneficia a cartilagem independentemente do tipo de exercício."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: tomar todos os dias, não só em dias de treino. Ómega-3: anti-inflamatório, saúde articular."},
+    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção. Ajuda no sono — tomar ao deitar."}
+  ],
+  descanso: [
+    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"Manter mesmo em descanso", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter todos os dias. A síntese de colagénio é contínua — não parar em dias de descanso."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D", detail:"Tudo com refeição", goal:"Força + ossos + anti-inflamatório", note:"Creatina: tomar todos os dias para manter saturação muscular. Vitamina D com gordura para absorção."},
+    {time:"Lanche", name:"Proteína 20g (se necessário)", detail:"Se ingestão baixa", goal:"Síntese proteica muscular, recuperação", note:"Só se a ingestão proteica do dia for baixa. Fontes alimentares prioritárias: ovos, frango, peixe, iogurte grego."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Manter sempre, mesmo em descanso. Ajuda na recuperação durante o sono."}
+  ]
+};
+
+function getWeekExtras(weekIdx) {
+  const w = weekIdx + 1;
+  let extras = [];
+  if (w <= 2) extras.push({name:"Creatina fase de carga: 5g 2x/dia", detail:"Apenas semanas 1-2"});
+  if (w <= 12) extras.push({name:"Glucosamina + Condroitina 1500mg + 1200mg", detail:"Suporte articular (anca)"});
+  if (w >= 13 && w <= 19) {
+    extras.push({name:"Tart Cherry 500mg (pós long run sábado)", detail:"Anti-inflamatório, reduz DOMS"});
+    extras.push({name:"Curcumina 500-1000mg (após long runs >25km)", detail:"Anti-inflamatório articular"});
+  }
+  if (w >= 20) extras.push({name:"Beta-alanina 3-4g/dia (opcional)", detail:"Resistência muscular"});
+  if (w >= 23) extras.push({name:"Parar curcumina 3 dias antes da prova", detail:"Manter alguma inflamação"});
+  return extras;
+}
+
+function getPhase(weekIdx) {
+  const w = weekIdx + 1;
+  if (w <= 6) return {name:'Base', protein:'1,6 g/kg (~100g/dia)'};
+  if (w <= 12) return {name:'Desenvolvimento', protein:'1,8 g/kg (~115g/dia)'};
+  if (w <= 19) return {name:'Específica', protein:'2,0 g/kg (~127g/dia)'};
+  return {name:'Taper', protein:'1,8 g/kg (~115g/dia)'};
+}
+
+const PLAN_START = new Date('2026-05-19');
+let currentWeek = 0;
+let currentDayIdx = 0;
+
+function getCurrentWeekIndex() {
+  const now = new Date();
+  const diff = now - PLAN_START;
+  const wk = Math.floor(diff / (7*24*60*60*1000));
+  return Math.max(0, Math.min(wk, 24));
+}
+
+function getCurrentDayOfWeek() {
+  const jsDay = new Date().getDay(); // 0=Sun
+  // Convert to Mon=0 format
+  return jsDay === 0 ? 6 : jsDay - 1;
+}
+
+function getState() { return JSON.parse(localStorage.getItem('maratona_supps') || '{}'); }
+function saveState(s) { localStorage.setItem('maratona_supps', JSON.stringify(s)); }
+
+function toggleSupp(idx) {
+  const state = getState();
+  const key = `w${currentWeek}-d${currentDayIdx}-${idx}`;
+  state[key] = !state[key];
+  saveState(state);
+  renderDay();
+}
+
+function toggleExtra(idx) {
+  const state = getState();
+  const key = `w${currentWeek}-d${currentDayIdx}-extra-${idx}`;
+  state[key] = !state[key];
+  saveState(state);
+  renderDay();
+}
+
+function renderWeekChips() {
+  const container = document.getElementById('weekChips');
+  container.innerHTML = Array.from({length:25}, (_, i) => {
+    const active = i === currentWeek ? 'active' : '';
+    return `<button class="chip ${active}" onclick="goToWeek(${i})">S${i+1}</button>`;
+  }).join('');
+  setTimeout(() => {
+    const el = container.querySelector('.active');
+    if (el) el.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }, 50);
+}
+
+function renderWeekNav() {
+  const phase = getPhase(currentWeek);
+  document.getElementById('weekTitle').textContent = `Semana ${currentWeek+1} — ${phase.name}`;
+  document.getElementById('weekMeta').textContent = `Proteína: ${phase.protein}`;
+  document.getElementById('prevBtn').disabled = currentWeek === 0;
+  document.getElementById('nextBtn').disabled = currentWeek === 24;
+}
+
+function renderDayTabs() {
+  const days = WEEK_DAYS[currentWeek];
+  const container = document.getElementById('dayTabs');
+  container.innerHTML = days.map((type, i) => {
+    const active = i === currentDayIdx ? 'active' : '';
+    const icon = type === 'corrida' ? '🏃' : type === 'strength' ? '💪' : type === 'cross' ? '🚴' : '😴';
+    return `<button class="day-tab ${active}" onclick="selectDay(${i})">${DAY_SHORT[i]}<br>${icon}</button>`;
+  }).join('');
+}
+
+function renderDay() {
+  const dayType = WEEK_DAYS[currentWeek][currentDayIdx];
+  const supps = SUPPS_BY_TYPE[dayType];
+  const extras = getWeekExtras(currentWeek);
+  const state = getState();
+  const typeLabel = dayType === 'corrida' ? 'Dia de Corrida' : dayType === 'strength' ? 'Dia de Strength' : dayType === 'cross' ? 'Cross (Bike)' : 'Descanso';
+
+  let html = `<span class="day-type-badge ${dayType}">${typeLabel}</span>`;
+  html += `<h3 class="section-title">${DAY_NAMES[currentDayIdx]}</h3>`;
+
+  html += supps.map((s, i) => {
+    const key = `w${currentWeek}-d${currentDayIdx}-${i}`;
+    const isDone = state[key];
+    return `
+      <div class="supp-card ${isDone ? 'done' : ''}">
+        <button class="supp-check ${isDone ? 'checked' : ''}" onclick="toggleSupp(${i})">✓</button>
+        <div class="supp-info">
+          <div class="supp-time">${s.time}</div>
+          <div class="supp-name">${s.name}</div>
+          <div class="supp-detail">${s.detail}</div>
+          <div class="supp-note">ℹ️ ${s.note}</div>
+        </div>
+        <div class="supp-goal">${s.goal}</div>
+      </div>`;
+  }).join('');
+
+  if (extras.length > 0) {
+    html += `<h3 class="section-title" style="margin-top:16px;">⚡ Extras — tomar ALÉM da lista acima</h3>`;
+    html += extras.map((e, ei) => {
+      const key = `w${currentWeek}-d${currentDayIdx}-extra-${ei}`;
+      const isDone = state[key];
+      return `
+      <div class="supp-card extra ${isDone ? 'done' : ''}">
+        <button class="supp-check ${isDone ? 'checked' : ''}" onclick="toggleExtra(${ei})">✓</button>
+        <div class="supp-info">
+          <div class="supp-name">${e.name}</div>
+          <div class="supp-detail">${e.detail}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('dayContent').innerHTML = html;
+}
+
+function selectDay(i) { currentDayIdx = i; renderDayTabs(); renderDay(); }
+function goToWeek(i) { currentWeek = i; currentDayIdx = 0; render(); }
+function prevWeek() { if (currentWeek > 0) { currentWeek--; currentDayIdx = 0; render(); } }
+function nextWeek() { if (currentWeek < 24) { currentWeek++; currentDayIdx = 0; render(); } }
+
+function render() {
+  renderWeekChips();
+  renderWeekNav();
+  renderDayTabs();
+  renderDay();
+}
+
+function toggleNav() {
+  document.getElementById('sidenav').classList.toggle('open');
+  document.getElementById('navOverlay').classList.toggle('open');
+}
+
+function toggleNote(el) {
+  el.classList.toggle('expanded');
+}
+
+currentWeek = getCurrentWeekIndex();
+currentDayIdx = getCurrentDayOfWeek();
+render();
+  </script>
+</body>
+</html>

@@ -376,7 +376,9 @@
     <div class="sidenav-section">
       <div class="sidenav-section-title">Navegação</div>
       <div class="sidenav-item active" onclick="navTo('plano')"><span class="nav-icon">📋</span> Plano semanal</div>
-      <div class="sidenav-item" onclick="navTo('progresso')"><span class="nav-icon">📊</span> Progresso</div>
+      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Força & Estabilidade (Seg)</div>
+      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Ativação & Proteção (Sex)</div>
+      <div class="sidenav-item" onclick="window.location.href='suplementos.html'"><span class="nav-icon">💊</span> Suplementos</div>
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Ações</div>
@@ -391,7 +393,7 @@
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
-      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.0.39</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.0.43</div>
     </div>
   </nav>
   <header>
@@ -424,7 +426,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
   </div>
   <div class="week-content" id="weekContent"></div>
-  <div style="text-align:center; padding: 16px; font-size:0.75rem; opacity:0.4;">v0.0.43</div>
+  <div style="text-align:center; padding: 16px; font-size:0.75rem; opacity:0.4;">v0.0.47</div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
       <h2 id="overlayTitle"></h2>
@@ -1171,12 +1173,20 @@ function toggleNav() {
 }
 
 function navTo(page) {
-  // For now just close nav - can add page routing later
   document.querySelectorAll('.sidenav-item').forEach(el => el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
   toggleNav();
   if (page === 'plano') {
     window.scrollTo({top: 0, behavior: 'smooth'});
+  } else if (page === 'forca') {
+    // Find next Monday strength in current week
+    const week = PLAN[currentWeek];
+    const dayIdx = week.days.findIndex(d => d.type === 'strength' && d.desc.includes('Força'));
+    if (dayIdx >= 0) openOverlay(currentWeek, dayIdx);
+  } else if (page === 'ativacao') {
+    const week = PLAN[currentWeek];
+    const dayIdx = week.days.findIndex(d => d.type === 'strength' && d.desc.includes('Ativação'));
+    if (dayIdx >= 0) openOverlay(currentWeek, dayIdx);
   }
 }
 
