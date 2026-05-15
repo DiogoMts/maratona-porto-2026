@@ -228,10 +228,21 @@ function renderWeekChips() {
   }, 50);
 }
 
+function getWeekDates(weekIdx) {
+  const start = new Date(PLAN_START);
+  start.setDate(start.getDate() + weekIdx * 7);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const startStr = `${start.getDate()} ${months[start.getMonth()]}`;
+  const endStr = `${end.getDate()} ${months[end.getMonth()]}`;
+  return `${startStr} - ${endStr}`;
+}
+
 function renderWeekNav() {
   const phase = getPhase(currentWeek);
   document.getElementById('weekTitle').textContent = `Semana ${currentWeek+1} — ${phase.name}`;
-  document.getElementById('weekMeta').textContent = `Proteína: ${phase.protein}`;
+  document.getElementById('weekMeta').textContent = `${getWeekDates(currentWeek)} | Proteína: ${phase.protein}`;
   document.getElementById('prevBtn').disabled = currentWeek === 0;
   document.getElementById('nextBtn').disabled = currentWeek === 24;
 }
