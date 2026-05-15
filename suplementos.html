@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#e94560">
-  <title>Maratona Porto 9 Novembro 2026</title>
+  <title>Maratona Porto 8 Novembro 2026</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -131,28 +131,26 @@ const DAY_SHORT = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 
 const SUPPS_BY_TYPE = {
   corrida: [
-    {time:"5:30", name:"Colagénio 15g + Vitamina C 500mg", detail:"30 min antes da corrida", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30-60 min ANTES do treino para que os aminoácidos estejam disponíveis durante o exercício. Estudos mostram benefício para tendões e cartilagem quando combinado com vitamina C."},
-    {time:"Pós-treino", name:"Proteína Whey 25-30g", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Não causa retenção de água significativa. Ómega-3: anti-inflamatório, saúde articular."},
-    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Ideal medir 25(OH)D antes de suplementar. Objetivo: 40-60 ng/mL."},
+    {time:"5:30", name:"Artrozen + Vitamina C 500mg", detail:"30 min antes da corrida", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino. Protege tendões e cartilagem da anca durante o exercício."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Não causa retenção de água significativa. Ómega-3: anti-inflamatório, saúde articular. Vitamina D: mesmo com sol em Portugal, muitos atletas têm défice. Objetivo: 40-60 ng/mL."},
     {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
   ],
   strength: [
-    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"30 min antes do treino", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30-60 min ANTES do treino para que os aminoácidos estejam disponíveis durante o exercício. Estudos mostram benefício para tendões e cartilagem quando combinado com vitamina C."},
-    {time:"Pós-treino", name:"Proteína Whey 25g", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Ómega-3: anti-inflamatório, saúde articular."},
-    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Ideal medir 25(OH)D antes de suplementar. Objetivo: 40-60 ng/mL."},
+    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"30 min antes do treino", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino. Protege tendões e cartilagem da anca durante o exercício."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Ómega-3: anti-inflamatório, saúde articular. Vitamina D: objetivo 40-60 ng/mL."},
     {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
   ],
   cross: [
-    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"Manter rotina", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter mesmo sem impacto. O colagénio beneficia a cartilagem independentemente do tipo de exercício."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3", detail:"Com refeição", goal:"Força, proteção articular + anti-inflamatório", note:"Creatina: tomar todos os dias, não só em dias de treino. Ómega-3: anti-inflamatório, saúde articular."},
-    {time:"Jantar", name:"Vitamina D 2000-4000 UI", detail:"Com gordura", goal:"Saúde óssea, muscular, imunidade", note:"Em Portugal, mesmo com sol, muitos atletas têm défice. Objetivo: 40-60 ng/mL."},
+    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"Manter rotina", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter mesmo sem impacto. Protege a cartilagem da anca."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Após a bike", goal:"Síntese proteica muscular, recuperação", note:"Mesmo em dias de bike, a proteína pós-treino ajuda na recuperação."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: tomar todos os dias, não só em dias de treino. Ómega-3: anti-inflamatório. Vitamina D: objetivo 40-60 ng/mL."},
     {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção. Ajuda no sono — tomar ao deitar."}
   ],
   descanso: [
-    {time:"Manhã", name:"Colagénio 15g + Vitamina C 500mg", detail:"Manter mesmo em descanso", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter todos os dias. A síntese de colagénio é contínua — não parar em dias de descanso."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D", detail:"Tudo com refeição", goal:"Força + ossos + anti-inflamatório", note:"Creatina: tomar todos os dias para manter saturação muscular. Vitamina D com gordura para absorção."},
+    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"Manter mesmo em descanso", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter todos os dias. Protege a cartilagem da anca."},
+    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Tudo com refeição", goal:"Força + ossos + anti-inflamatório", note:"Creatina: tomar todos os dias para manter saturação muscular. Vitamina D com gordura para absorção."},
     {time:"Lanche", name:"Proteína 20g (se necessário)", detail:"Se ingestão baixa", goal:"Síntese proteica muscular, recuperação", note:"Só se a ingestão proteica do dia for baixa. Fontes alimentares prioritárias: ovos, frango, peixe, iogurte grego."},
     {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Manter sempre, mesmo em descanso. Ajuda na recuperação durante o sono."}
   ]
@@ -168,7 +166,6 @@ function getWeekExtras(weekIdx) {
     extras.push({name:"Curcumina 500-1000mg (após long runs >25km)", detail:"Anti-inflamatório articular"});
   }
   if (w >= 20) extras.push({name:"Beta-alanina 3-4g/dia (opcional)", detail:"Resistência muscular"});
-  if (w >= 23) extras.push({name:"Parar curcumina 3 dias antes da prova", detail:"Manter alguma inflamação"});
   return extras;
 }
 
@@ -259,10 +256,23 @@ function renderDayTabs() {
 
 function renderDay() {
   const dayType = WEEK_DAYS[currentWeek][currentDayIdx];
-  const supps = SUPPS_BY_TYPE[dayType];
-  const extras = getWeekExtras(currentWeek);
+  let supps = JSON.parse(JSON.stringify(SUPPS_BY_TYPE[dayType]));
   const state = getState();
+  const weekNum = currentWeek + 1;
   const typeLabel = dayType === 'corrida' ? 'Dia de Corrida' : dayType === 'strength' ? 'Dia de Strength' : dayType === 'cross' ? 'Cross (Bike)' : 'Descanso';
+
+  // Fase 3 (semanas 13-19): proteína sobe para 30g + adicionar 20g ao deitar
+  if (weekNum >= 13 && weekNum <= 19) {
+    supps = supps.map(s => {
+      if (s.name.includes('Proteína Whey 25g')) {
+        return {...s, name: s.name.replace('25g', '30g'), note: 'Fase específica: dose aumentada para suportar volume alto.'};
+      }
+      return s;
+    });
+    if (dayType === 'corrida' || dayType === 'strength' || dayType === 'cross') {
+      supps.push({time:"Deitar (antes do magnésio)", name:"Proteína 20g (caseína ou whey)", detail:"Dose extra fase 3", goal:"Recuperação nocturna", note:"Volume alto — aumentar ingestão proteica total para ~127g/dia."});
+    }
+  }
 
   let html = `<span class="day-type-badge ${dayType}">${typeLabel}</span>`;
   html += `<h3 class="section-title">${DAY_NAMES[currentDayIdx]}</h3>`;
@@ -282,22 +292,6 @@ function renderDay() {
         </div>
       </div>`;
   }).join('');
-
-  if (extras.length > 0) {
-    html += `<h3 class="section-title" style="margin-top:16px;">⚡ Extras — tomar ALÉM da lista acima</h3>`;
-    html += extras.map((e, ei) => {
-      const key = `w${currentWeek}-d${currentDayIdx}-extra-${ei}`;
-      const isDone = state[key];
-      return `
-      <div class="supp-card extra ${isDone ? 'done' : ''}">
-        <button class="supp-check ${isDone ? 'checked' : ''}" onclick="toggleExtra(${ei})">✓</button>
-        <div class="supp-info">
-          <div class="supp-name">${e.name}</div>
-          <div class="supp-detail">${e.detail}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
 
   document.getElementById('dayContent').innerHTML = html;
 }
