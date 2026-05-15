@@ -114,6 +114,11 @@
       color: transparent;
       font-size: 14px;
     }
+    .check-btn.partial {
+      background: transparent;
+      border-color: #f9a825;
+      color: #f9a825;
+    }
     .check-btn.checked {
       background: #4ecca3;
       border-color: #4ecca3;
@@ -180,6 +185,31 @@
       height: 8px;
       border-radius: 50%;
     }
+    .day-card .day-note {
+      font-size: 0.75rem;
+      color: #f9a825;
+      margin-top: 3px;
+      font-style: italic;
+    }
+    .overlay-note {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #0f3460;
+    }
+    .overlay-note textarea {
+      width: 100%;
+      background: #0f3460;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #eee;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+    }
+    .overlay-note textarea:focus { outline: 1px solid #4ecca3; border-color: #4ecca3; }
+    .overlay-note label { font-size: 0.85rem; opacity: 0.7; display: block; margin-bottom: 6px; }
     .overlay {
       display: none;
       position: fixed;
@@ -231,7 +261,30 @@
       border-radius: 8px;
       padding: 12px 14px;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+    .overlay-content .exercise-item .ex-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      background: transparent;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 12px;
+    }
+    .overlay-content .exercise-item .ex-check.checked {
+      background: #4ecca3;
+      border-color: #4ecca3;
+      color: #1a1a2e;
+    }
+    .overlay-content .exercise-info { flex: 1; }
     .overlay-content .exercise-name { font-weight: 600; font-size: 1rem; }
     .overlay-content .exercise-detail { font-size: 0.9rem; opacity: 0.7; margin-top: 3px; }
   </style>
@@ -242,8 +295,8 @@
     <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
   </header>
   <div class="stats">
-    <div class="stat"><div class="value" id="statDone">0</div><div class="label">Sessões feitas</div></div>
-    <div class="stat"><div class="value" id="statKm">0</div><div class="label">Km corridos</div></div>
+    <div class="stat"><div class="value" id="statDone">0</div><div class="label">Sessões</div></div>
+    <div class="stat"><div class="value" id="statKm">0</div><div class="label">Km</div></div>
     <div class="stat"><div class="value" id="statWeek">1</div><div class="label">Semana atual</div></div>
     <div class="stat"><div class="value" id="statDays">176</div><div class="label">Dias até prova</div></div>
   </div>
@@ -269,7 +322,7 @@
   <div class="week-content" id="weekContent"></div>
   <div style="text-align:center; padding: 16px;">
     <button onclick="exportData()" style="background:#0f3460; border:none; color:#eee; padding:12px 20px; border-radius:8px; font-size:0.9rem; cursor:pointer;">📤 Exportar progresso</button>
-    <div style="margin-top:12px; font-size:0.75rem; opacity:0.4;">v0.0.6</div>
+    <div style="margin-top:12px; font-size:0.75rem; opacity:0.4;">v0.0.25</div>
   </div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
@@ -510,92 +563,15 @@ const PLAN = [
 
 // Workout details for overlay
 const WORKOUT_DETAILS = {
-  strength_forca: {
-    title: "Força & Estabilidade",
-    content: `
-      <h3>Formato</h3>
-      <p>3 séries seguidas do mesmo exercício. Descanso 30s entre séries, 45s entre exercícios.</p>
-      <h3>Exercícios</h3>
-      <a href="https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">1. Single-leg deadlift — 3x10/lado ▶</div>
-        <div class="exercise-detail">Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).</div>
-      </a>
-      <a href="https://exrx.net/WeightExercises/Quadriceps/BBStepUp" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">2. Step-ups (banco 30cm) — 3x10/lado ▶</div>
-        <div class="exercise-detail">Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.</div>
-      </a>
-      <a href="https://fitbod.me/exercises/single-leg-glute-bridge" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">3. Pontes de glúteo (unilateral) — 3x10/lado ▶</div>
-        <div class="exercise-detail">Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.</div>
-      </a>
-      <a href="https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">4. Calf raises (unilateral) — 3x10/lado ▶</div>
-        <div class="exercise-detail">Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.</div>
-      </a>
-      <a href="https://liftmanual.com/front-plank/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">5. Prancha frontal — 3x30-45s ▶</div>
-        <div class="exercise-detail">Core. Corpo em linha recta, apertar abdominais e glúteos.</div>
-      </a>
-      <a href="https://fitnessvolt.com/side-plank/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">6. Prancha lateral — 3x20-30s/lado ▶</div>
-        <div class="exercise-detail">Oblíquos + estabilidade. Anca não pode cair.</div>
-      </a>
-    `
-  },
-  strength_ativacao: {
-    title: "Ativação & Proteção",
-    content: `
-      <h3>Formato</h3>
-      <p>3 séries seguidas do mesmo exercício. Descanso 20s entre séries, 30s entre exercícios. Sessão leve — prepara para o long run de sábado.</p>
-      <h3>Exercícios</h3>
-      <a href="https://www.sports-injury-physio.com/post/glute-bridge-exercises-4-variations-demonstrated" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">1. Pontes de glúteo (bilateral) — 3x15 ▶</div>
-        <div class="exercise-detail">Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.</div>
-      </a>
-      <a href="https://www.muscleandstrength.com/exercises/single-leg-glute-bridge" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">2. Pontes de glúteo (unilateral) — 3x10/lado ▶</div>
-        <div class="exercise-detail">Estabilidade pélvica. Manter pélvis nivelada, não rodar.</div>
-      </a>
-      <a href="https://www.exerciselibrary.com/exercise/band-clam-shell/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">3. Clamshells com banda — 3x15/lado ▶</div>
-        <div class="exercise-detail">Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.</div>
-      </a>
-      <a href="https://liftmanual.com/side-lying-leg-raise/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">4. Side-lying hip abduction — 3x12/lado ▶</div>
-        <div class="exercise-detail">Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.</div>
-      </a>
-      <a href="https://www.muscleandstrength.com/exercises/standing-calf-raise.html" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">5. Calf raises (bilateral) — 3x15 ▶</div>
-        <div class="exercise-detail">Gémeos — manutenção. Ritmo: 2s subir, 2s descer.</div>
-      </a>
-      <a href="https://liftmanual.com/front-plank/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">6. Prancha frontal — 3x30-45s ▶</div>
-        <div class="exercise-detail">Core. Corpo em linha recta.</div>
-      </a>
-      <a href="https://www.fitfatherproject.com/side-plank-exercise/" target="_blank" class="exercise-item" style="display:block;text-decoration:none;color:inherit;">
-        <div class="exercise-name">7. Prancha lateral — 3x20-30s/lado ▶</div>
-        <div class="exercise-detail">Oblíquos + estabilidade.</div>
-      </a>
-    `
-  },
   cross_bike: {
     title: "Cross-Training — Bicicleta Estática",
     content: `
       <h3>Equipamento</h3>
       <p>MERACH S38 (MRK-S38-7473) — 16 níveis de resistência</p>
       <h3>Protocolo (45-50 min)</h3>
-      <div class="exercise-item">
-        <div class="exercise-name">1. Aquecimento — 5 min</div>
-        <div class="exercise-detail">Nível 3, cadência livre</div>
-      </div>
-      <div class="exercise-item">
-        <div class="exercise-name">2. Zona 2 — 35-40 min</div>
-        <div class="exercise-detail">Nível 5-8, cadência 85-95 rpm, FC 120-140 bpm</div>
-      </div>
-      <div class="exercise-item">
-        <div class="exercise-name">3. Retorno à calma — 5 min</div>
-        <div class="exercise-detail">Nível 2-3, cadência baixa</div>
-      </div>
+      <div class="exercise-item"><div class="exercise-info"><div><div class="exercise-name">1. Aquecimento — 5 min</div><div class="exercise-detail">Nível 3, cadência livre</div></div></div></div>
+      <div class="exercise-item"><div class="exercise-info"><div><div class="exercise-name">2. Zona 2 — 35-40 min</div><div class="exercise-detail">Nível 5-8, cadência 85-95 rpm, FC 120-140 bpm</div></div></div></div>
+      <div class="exercise-item"><div class="exercise-info"><div><div class="exercise-name">3. Retorno à calma — 5 min</div><div class="exercise-detail">Nível 2-3, cadência baixa</div></div></div></div>
       <h3>Notas</h3>
       <ul>
         <li>Ajustar nível para manter FC entre 120-140 bpm</li>
@@ -606,10 +582,85 @@ const WORKOUT_DETAILS = {
   }
 };
 
-function getWorkoutDetail(day) {
+const STRENGTH_EXERCISES = {
+  forca: [
+    {name:'1. Single-leg deadlift — 3x10/lado', detail:'Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).', link:'https://www.muscleandstrength.com/exercises/single-leg-romanian-deadlift'},
+    {name:'2. Step-ups (banco 30cm) — 3x10/lado', detail:'Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.', link:'https://liftmanual.com/step-up/'},
+    {name:'3. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.', link:'https://www.muscleandstrength.com/exercises/single-leg-glute-bridge'},
+    {name:'4. Calf raises (unilateral) — 3x10/lado', detail:'Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.', link:'https://www.muscleandstrength.com/exercises/standing-one-leg-calf-raise-with-dumbbell.html'},
+    {name:'5. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta, apertar abdominais e glúteos.', link:'https://liftmanual.com/front-plank/'},
+    {name:'6. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade. Anca não pode cair.', link:'https://www.fitfatherproject.com/side-plank-exercise/'}
+  ],
+  ativacao: [
+    {name:'1. Pontes de glúteo (bilateral) — 3x15', detail:'Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.', link:'https://www.sports-injury-physio.com/post/glute-bridge-exercises-4-variations-demonstrated'},
+    {name:'2. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Manter pélvis nivelada, não rodar.', link:'https://www.muscleandstrength.com/exercises/single-leg-glute-bridge'},
+    {name:'3. Clamshells com banda — 3x15/lado', detail:'Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.', link:'https://www.exerciselibrary.com/exercise/band-clam-shell/'},
+    {name:'4. Side-lying hip abduction — 3x12/lado', detail:'Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.', link:'https://liftmanual.com/side-lying-leg-raise/'},
+    {name:'5. Calf raises (bilateral) — 3x15', detail:'Gémeos — manutenção. Ritmo: 2s subir, 2s descer.', link:'https://www.muscleandstrength.com/exercises/standing-calf-raise.html'},
+    {name:'6. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta.', link:'https://liftmanual.com/front-plank/'},
+    {name:'7. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade.', link:'https://www.fitfatherproject.com/side-plank-exercise/'}
+  ]
+};
+
+function getStrengthContent(type, weekIdx, dayIdx) {
+  const exercises = STRENGTH_EXERCISES[type];
+  const format = type === 'forca' 
+    ? '3 séries seguidas do mesmo exercício. Descanso 30s entre séries, 45s entre exercícios.'
+    : '3 séries seguidas do mesmo exercício. Descanso 20s entre séries, 30s entre exercícios. Sessão leve — prepara para o long run de sábado.';
+  const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+  let html = `<h3>Formato</h3><p>${format}</p><h3>Exercícios</h3>`;
+  exercises.forEach((ex, i) => {
+    const key = `ex-${weekIdx}-${dayIdx}-${i}`;
+    const isDone = exCompleted[key];
+    const checkedClass = isDone ? 'checked' : '';
+    html += `<div class="exercise-item">
+      <button class="ex-check ${checkedClass}" onclick="event.preventDefault();event.stopPropagation();toggleExercise('${key}')">✓</button>
+      <a href="${ex.link}" target="_blank" class="exercise-info" style="text-decoration:none;color:inherit;">
+        <div>
+          <div class="exercise-name">${ex.name} ▶</div>
+          <div class="exercise-detail">${ex.detail}</div>
+        </div>
+      </a>
+    </div>`;
+  });
+  return html;
+}
+
+function toggleExercise(key) {
+  const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+  exCompleted[key] = !exCompleted[key];
+  localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
+  const overlay = document.getElementById('overlay');
+  const weekIdx = parseInt(overlay.dataset.week);
+  const dayIdx = parseInt(overlay.dataset.day);
+  const day = PLAN[weekIdx].days[dayIdx];
+
+  // Auto-mark session as done if all exercises checked
   if (day.type === 'strength') {
-    if (day.desc.includes('Força')) return WORKOUT_DETAILS.strength_forca;
-    if (day.desc.includes('Ativação')) return WORKOUT_DETAILS.strength_ativacao;
+    const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
+    const total = STRENGTH_EXERCISES[type].length;
+    let allDone = true;
+    for (let i = 0; i < total; i++) {
+      if (!exCompleted[`ex-${weekIdx}-${dayIdx}-${i}`]) { allDone = false; break; }
+    }
+    const sessionKey = `${weekIdx}-${dayIdx}`;
+    if (allDone && !completed[sessionKey]) {
+      completed[sessionKey] = true;
+      localStorage.setItem('maratona_completed', JSON.stringify(completed));
+    } else if (!allDone && completed[sessionKey]) {
+      completed[sessionKey] = false;
+      localStorage.setItem('maratona_completed', JSON.stringify(completed));
+    }
+  }
+
+  openOverlay(weekIdx, dayIdx);
+  renderWeek();
+}
+
+function getWorkoutDetail(day, weekIdx, dayIdx) {
+  if (day.type === 'strength') {
+    if (day.desc.includes('Força')) return { title: 'Força & Estabilidade', content: getStrengthContent('forca', weekIdx, dayIdx) };
+    if (day.desc.includes('Ativação')) return { title: 'Ativação & Proteção', content: getStrengthContent('ativacao', weekIdx, dayIdx) };
   }
   if (day.type === 'cross') return WORKOUT_DETAILS.cross_bike;
   // Running workouts - generate detail from the day data
@@ -720,15 +771,54 @@ function getRunningDetail(day) {
 
 function openOverlay(weekIdx, dayIdx) {
   const day = PLAN[weekIdx].days[dayIdx];
-  const detail = getWorkoutDetail(day);
+  const detail = getWorkoutDetail(day, weekIdx, dayIdx);
   if (!detail) return;
+  const key = `${weekIdx}-${dayIdx}`;
+  const isDone = completed[key];
+  const btnText = isDone ? '✓ Feito' : 'Marcar como feito';
+  const btnStyle = isDone 
+    ? 'background:#4ecca3;color:#1a1a2e;' 
+    : 'background:#0f3460;color:#eee;';
   document.getElementById('overlayTitle').textContent = detail.title;
-  document.getElementById('overlayContent').innerHTML = detail.content;
+  document.getElementById('overlayContent').innerHTML = detail.content +
+    `<div class="overlay-note">
+      <label>📝 Notas</label>
+      <textarea id="overlayNoteInput" placeholder="Como correu? Sensações, dor, ajustes..." oninput="saveNote('${key}', this.value)">${getNote(key)}</textarea>
+    </div>`;
   document.getElementById('overlay').classList.add('active');
+  document.getElementById('overlay').dataset.key = key;
+  document.getElementById('overlay').dataset.week = weekIdx;
+  document.getElementById('overlay').dataset.day = dayIdx;
+}
+
+function toggleFromOverlay(key) {
+  completed[key] = !completed[key];
+  localStorage.setItem('maratona_completed', JSON.stringify(completed));
+  const overlay = document.getElementById('overlay');
+  const weekIdx = parseInt(overlay.dataset.week);
+  const dayIdx = parseInt(overlay.dataset.day);
+  openOverlay(weekIdx, dayIdx);
+  renderWeek();
 }
 
 function closeOverlay() {
   document.getElementById('overlay').classList.remove('active');
+  renderWeek();
+}
+
+function getNote(key) {
+  const notes = JSON.parse(localStorage.getItem('maratona_notes') || '{}');
+  return notes[key] || '';
+}
+
+function saveNote(key, value) {
+  const notes = JSON.parse(localStorage.getItem('maratona_notes') || '{}');
+  if (value.trim()) {
+    notes[key] = value;
+  } else {
+    delete notes[key];
+  }
+  localStorage.setItem('maratona_notes', JSON.stringify(notes));
 }
 
 // Close overlay on back button or escape
@@ -777,11 +867,15 @@ function getTotalSessions() {
   return PLAN.reduce((sum, w) => sum + w.days.filter(d => d.type !== 'rest').length, 0);
 }
 
+function getTotalKm() {
+  return Math.round(PLAN.reduce((sum, w) => sum + w.days.reduce((s, d) => s + d.km, 0), 0));
+}
+
 function updateStats() {
   const done = getCompletedCount();
   const total = getTotalSessions();
-  document.getElementById('statDone').textContent = done;
-  document.getElementById('statKm').textContent = Math.round(getCompletedKm());
+  document.getElementById('statDone').textContent = `${done}/${total}`;
+  document.getElementById('statKm').textContent = `${Math.round(getCompletedKm())}/${getTotalKm()}`;
   document.getElementById('statWeek').textContent = currentWeek + 1;
   document.getElementById('statDays').textContent = getDaysUntilRace();
   document.getElementById('progressFill').style.width = `${(done/total*100).toFixed(1)}%`;
@@ -817,14 +911,25 @@ function renderWeek() {
   document.getElementById('nextWeek').disabled = currentWeek === PLAN.length - 1;
 
   const container = document.getElementById('weekContent');
+  const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
   container.innerHTML = week.days.map((day, i) => {
     const key = `${currentWeek}-${i}`;
     const isDone = completed[key];
     const doneClass = isDone ? 'done' : '';
-    const checkedClass = isDone ? 'checked' : '';
+    let checkedClass = isDone ? 'checked' : '';
+    // Check partial completion for strength
+    if (!isDone && day.type === 'strength') {
+      const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
+      const total = STRENGTH_EXERCISES[type].length;
+      let count = 0;
+      for (let j = 0; j < total; j++) {
+        if (exCompleted[`ex-${currentWeek}-${i}-${j}`]) count++;
+      }
+      if (count > 0) checkedClass = 'partial';
+    }
     const kmText = day.km > 0 ? `${day.km} km` : '';
-    const clickable = getWorkoutDetail(day) ? `onclick="openOverlay(${currentWeek},${i})"` : '';
-    const cursorStyle = getWorkoutDetail(day) ? 'style="cursor:pointer"' : '';
+    const clickable = getWorkoutDetail(day, currentWeek, i) ? `onclick="openOverlay(${currentWeek},${i})"` : '';
+    const cursorStyle = getWorkoutDetail(day, currentWeek, i) ? 'style="cursor:pointer"' : '';
     const isRest = day.type === 'rest';
     const checkBtn = isRest ? '<div style="width:28px"></div>' :
       `<button class="check-btn ${checkedClass}" onclick="event.stopPropagation();toggleDay('${key}')">✓</button>`;
@@ -839,6 +944,7 @@ function renderWeek() {
           <div class="day-type">${formatType(day.type)}</div>
           <div class="day-desc">${day.desc}</div>
           <div class="day-pace">${day.pace}</div>
+          ${getNote(`${currentWeek}-${i}`) ? `<div class="day-note">📝 ${getNote(`${currentWeek}-${i}`).substring(0,40)}${getNote(`${currentWeek}-${i}`).length > 40 ? '...' : ''}</div>` : ''}
         </div>
       </div>
     `;
@@ -859,8 +965,40 @@ function formatType(type) {
 }
 
 function toggleDay(key) {
-  completed[key] = !completed[key];
+  const wasCompleted = completed[key];
+  completed[key] = !wasCompleted;
   localStorage.setItem('maratona_completed', JSON.stringify(completed));
+
+  // If unchecking, also clear all individual exercise checkboxes
+  if (wasCompleted) {
+    const [weekIdx, dayIdx] = key.split('-').map(Number);
+    const day = PLAN[weekIdx].days[dayIdx];
+    if (day.type === 'strength') {
+      const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
+      const total = STRENGTH_EXERCISES[type].length;
+      const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+      for (let j = 0; j < total; j++) {
+        delete exCompleted[`ex-${weekIdx}-${dayIdx}-${j}`];
+      }
+      localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
+    }
+  }
+
+  // If checking via button, also mark all exercises as done
+  if (!wasCompleted) {
+    const [weekIdx, dayIdx] = key.split('-').map(Number);
+    const day = PLAN[weekIdx].days[dayIdx];
+    if (day.type === 'strength') {
+      const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
+      const total = STRENGTH_EXERCISES[type].length;
+      const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+      for (let j = 0; j < total; j++) {
+        exCompleted[`ex-${weekIdx}-${dayIdx}-${j}`] = true;
+      }
+      localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
+    }
+  }
+
   renderWeek();
 }
 
@@ -893,13 +1031,15 @@ renderWeek();
 
 // Export data
 function exportData() {
-  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito\n';
+  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito,Nota\n';
   PLAN.forEach((week, wi) => {
     week.days.forEach((day, di) => {
       if (day.type === 'rest') return;
       const done = completed[`${wi}-${di}`] ? 'Sim' : 'Não';
       const desc = day.desc.replace(/,/g, ' ');
-      csv += `${week.week},${day.day},${day.type},${day.km},"${desc}",${day.pace},${done}\n`;
+      const note = getNote(`${wi}-${di}`).replace(/,/g, ' ').replace(/\n/g, ' ');
+      const notePart = note ? `,"${note}"` : '';
+      csv += `${week.week},${day.day},${day.type},${day.km},"${desc}",${day.pace},${done}${notePart}\n`;
     });
   });
 
