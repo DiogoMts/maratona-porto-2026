@@ -71,10 +71,18 @@
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Navegação</div>
-      <div class="sidenav-item" onclick="window.location.href='index.html'"><span class="nav-icon">📋</span> Plano semanal</div>
-      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Força & Estabilidade (Seg)</div>
-      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Ativação & Proteção (Sex)</div>
+      <div class="sidenav-item" onclick="window.location.href='index.html'"><span class="nav-icon">📅</span> Plano de treino</div>
       <div class="sidenav-item active"><span class="nav-icon">💊</span> Suplementos</div>
+      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Exercícios Segunda</div>
+      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Exercícios Sexta</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Ações</div>
+      <div class="sidenav-item" onclick="exportSupps();toggleNav()"><span class="nav-icon">📤</span> Exportar CSV</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Info</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.1.0</div>
     </div>
   </nav>
   <header>
@@ -315,6 +323,35 @@ function toggleNav() {
 
 function toggleNote(el) {
   el.classList.toggle('expanded');
+}
+
+function exportSupps() {
+  const state = getState();
+  let csv = 'Semana,Dia,Suplemento,Tomado\n';
+  for (let w = 0; w < 25; w++) {
+    const days = WEEK_DAYS[w];
+    days.forEach((dayType, d) => {
+      if (dayType === 'descanso' && d === 6) return; // skip domingo from export
+      const supps = SUPPS_BY_TYPE[dayType];
+      supps.forEach((s, i) => {
+        const key = `w${w}-d${d}-${i}`;
+        const done = state[key] ? 'Sim' : 'Não';
+        const name = s.name.replace(/,/g, ' ');
+        csv += `${w+1},${DAY_NAMES[d]},${name},${done}\n`;
+      });
+    });
+  }
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  if (navigator.share) {
+    const file = new File([csv], 'suplementos-progresso.csv', {type:'text/csv'});
+    navigator.share({title:'Suplementos — Progresso', files:[file]}).catch(() => {
+      const a = document.createElement('a'); a.href = url; a.download = 'suplementos-progresso.csv'; a.click();
+    });
+  } else {
+    const a = document.createElement('a'); a.href = url; a.download = 'suplementos-progresso.csv'; a.click();
+  }
+  URL.revokeObjectURL(url);
 }
 
 currentWeek = getCurrentWeekIndex();

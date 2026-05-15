@@ -375,10 +375,10 @@
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Navegação</div>
-      <div class="sidenav-item active" onclick="navTo('plano')"><span class="nav-icon">📋</span> Plano semanal</div>
-      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Força & Estabilidade (Seg)</div>
-      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Ativação & Proteção (Sex)</div>
+      <div class="sidenav-item active" onclick="navTo('plano')"><span class="nav-icon">📅</span> Plano de treino</div>
       <div class="sidenav-item" onclick="window.location.href='suplementos.html'"><span class="nav-icon">💊</span> Suplementos</div>
+      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Exercícios Segunda</div>
+      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Exercícios Sexta</div>
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Ações</div>
@@ -393,7 +393,7 @@
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
-      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.1.0</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.1.3</div>
     </div>
   </nav>
   <header>
@@ -426,7 +426,6 @@
     <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
   </div>
   <div class="week-content" id="weekContent"></div>
-  <div style="text-align:center; padding: 16px; font-size:0.75rem; opacity:0.4;">v0.1.0</div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
       <h2 id="overlayTitle"></h2>
@@ -1134,7 +1133,8 @@ renderWeek();
 
 // Export data
 function exportData() {
-  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito,Nota\n';
+  // --- Treino ---
+  let csv = 'TREINO\nSemana,Dia,Tipo,Km,Descrição,Pace,Feito,Nota\n';
   PLAN.forEach((week, wi) => {
     week.days.forEach((day, di) => {
       if (day.type === 'rest') return;
@@ -1146,7 +1146,22 @@ function exportData() {
     });
   });
 
-  // Try native share (mobile), fallback to download
+  // --- Suplementos ---
+  const suppState = JSON.parse(localStorage.getItem('maratona_supps') || '{}');
+  const DAY_NAMES = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+  csv += '\nSUPLEMENTOS\nSemana,Dia,Suplemento,Tomado\n';
+  for (let w = 0; w < 25; w++) {
+    for (let d = 0; d < 7; d++) {
+      // Check all possible supplement keys for this week/day
+      for (let i = 0; i < 8; i++) {
+        const key = `w${w}-d${d}-${i}`;
+        if (suppState[key] !== undefined) {
+          csv += `${w+1},${DAY_NAMES[d]},Suplemento ${i+1},${suppState[key] ? 'Sim' : 'Não'}\n`;
+        }
+      }
+    }
+  }
+
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
 
