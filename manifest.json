@@ -1,0 +1,22 @@
+{
+  "name": "Maratona Porto 2026",
+  "short_name": "Maratona",
+  "description": "Plano de treino para a Maratona do Porto 2026 — Diogo Matos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#e94560",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

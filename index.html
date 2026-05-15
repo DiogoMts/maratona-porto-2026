@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e94560">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Maratona Porto 2026</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    header {
+      background: linear-gradient(135deg, #e94560, #0f3460);
+      padding: 20px 16px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 1.2rem; font-weight: 700; }
+    header .subtitle { font-size: 0.8rem; opacity: 0.8; margin-top: 4px; }
+    .progress-bar {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      height: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .progress-bar .fill {
+      background: #4ecca3;
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.3s;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 16px;
+      background: #16213e;
+      border-bottom: 1px solid #0f3460;
+    }
+    .stat { text-align: center; }
+    .stat .value { font-size: 1.3rem; font-weight: 700; color: #4ecca3; }
+    .stat .label { font-size: 0.65rem; opacity: 0.7; margin-top: 2px; }
+    .week-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #16213e;
+      position: sticky;
+      top: 88px;
+      z-index: 99;
+    }
+    .week-nav button {
+      background: #0f3460;
+      border: none;
+      color: #eee;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .week-nav button:disabled { opacity: 0.3; }
+    .week-nav .week-title { font-size: 0.95rem; font-weight: 600; }
+    .week-nav .week-meta { font-size: 0.7rem; opacity: 0.7; }
+    .week-content { padding: 8px 12px; }
+    .day-card {
+      background: #16213e;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-left: 4px solid #333;
+      transition: opacity 0.2s;
+    }
+    .day-card.done { opacity: 0.5; }
+    .day-card.done .day-desc { text-decoration: line-through; }
+    .day-card[data-type="easy"] { border-left-color: #4ecca3; }
+    .day-card[data-type="mp"] { border-left-color: #f9a825; }
+    .day-card[data-type="tempo"] { border-left-color: #ff6b35; }
+    .day-card[data-type="intervals"] { border-left-color: #e94560; }
+    .day-card[data-type="long"] { border-left-color: #7b68ee; }
+    .day-card[data-type="long+mp"] { border-left-color: #9c27b0; }
+    .day-card[data-type="strength"] { border-left-color: #00bcd4; }
+    .day-card[data-type="cross"] { border-left-color: #8bc34a; }
+    .day-card[data-type="rest"] { border-left-color: #555; }
+    .day-card[data-type="recovery"] { border-left-color: #80cbc4; }
+    .day-card[data-type="strides"] { border-left-color: #4ecca3; }
+    .day-card[data-type="maratona"] { border-left-color: #ffd700; }
+    .check-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      background: transparent;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 14px;
+    }
+    .check-btn.checked {
+      background: #4ecca3;
+      border-color: #4ecca3;
+      color: #1a1a2e;
+    }
+    .day-info { flex: 1; min-width: 0; }
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .day-name { font-size: 0.75rem; font-weight: 600; opacity: 0.7; }
+    .day-km { font-size: 0.75rem; color: #4ecca3; font-weight: 600; }
+    .day-type {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .day-desc {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .day-pace { font-size: 0.7rem; opacity: 0.6; margin-top: 2px; }
+    .week-chips {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .week-chips::-webkit-scrollbar { display: none; }
+    .chip {
+      background: #0f3460;
+      border: none;
+      color: #eee;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .chip.active { background: #e94560; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 16px;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      opacity: 0.7;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏃 Maratona do Porto 2026</h1>
+    <div class="subtitle">Diogo Matos — Objetivo: 3:30-3:35</div>
+    <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+  </header>
+  <div class="stats">
+    <div class="stat"><div class="value" id="statDone">0</div><div class="label">Sessões feitas</div></div>
+    <div class="stat"><div class="value" id="statKm">0</div><div class="label">Km corridos</div></div>
+    <div class="stat"><div class="value" id="statWeek">1</div><div class="label">Semana atual</div></div>
+    <div class="stat"><div class="value" id="statDays">176</div><div class="label">Dias até prova</div></div>
+  </div>
+  <div class="week-chips" id="weekChips"></div>
+  <div class="week-nav">
+    <button id="prevWeek">◀</button>
+    <div style="text-align:center">
+      <div class="week-title" id="weekTitle">Semana 1</div>
+      <div class="week-meta" id="weekMeta"></div>
+    </div>
+    <button id="nextWeek">▶</button>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#4ecca3"></div>Easy</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f9a825"></div>MP</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div>Tempo</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e94560"></div>Intervals</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7b68ee"></div>Long</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00bcd4"></div>Strength</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8bc34a"></div>Bike</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
+  </div>
+  <div class="week-content" id="weekContent"></div>
+
+  <script>
+const PLAN = [
+  { week:1, dates:"19-25 Mai", km:29, phase:"Base", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Peso corporal"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"easy",km:5,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Peso corporal"},
+    {day:"Sáb",type:"long",km:10,desc:"Long run leve, sem pressão",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:2, dates:"26 Mai - 1 Jun", km:32, phase:"Base", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Peso corporal"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Peso corporal"},
+    {day:"Sáb",type:"long",km:12,desc:"Primeiro long run acima do habitual",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:3, dates:"2-8 Jun", km:35, phase:"Base", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Peso corporal"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"strides",km:7,desc:"6 km easy + 4x100m acelerações",pace:"5:30/km + sprints"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Peso corporal"},
+    {day:"Sáb",type:"long",km:14,desc:"Long run progressivo",pace:"5:30-5:40/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:4, dates:"9-15 Jun", km:24, phase:"Base", note:"⬇️ Descarga", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"rest",km:0,desc:"Descanso extra",pace:"—"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:10,desc:"Long run curto, pernas frescas",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:5, dates:"16-22 Jun", km:37, phase:"Base", note:"↗️ Rampa", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Peso corporal"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"tempo",km:8,desc:"2 km easy + 4 km @4:40/km + 2 km easy",pace:"5:30+4:40+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Peso corporal"},
+    {day:"Sáb",type:"long",km:16,desc:"Long run — manter ritmo constante",pace:"5:20-5:40/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:6, dates:"23-29 Jun", km:40, phase:"Base", note:"Início nutrição", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Peso corporal"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:9,desc:"2 km easy + 5 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Peso corporal"},
+    {day:"Sáb",type:"long",km:18,desc:"Long run — testar nutrição (1 gel km 12)",pace:"5:30→5:15/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:7, dates:"30 Jun - 6 Jul", km:36, phase:"Desenvolvimento", note:"⬇️ Descarga", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Ter",type:"easy",km:9,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qui",type:"easy",km:7,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:14,desc:"Long run relaxado",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:8, dates:"7-13 Jul", km:42, phase:"Desenvolvimento", note:"↗️ Rampa", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Ter",type:"easy",km:9,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:10,desc:"2 km easy + 6 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Sáb",type:"long",km:18,desc:"Long run — nutrição (1 gel km 12)",pace:"5:20-5:40/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:9, dates:"14-20 Jul", km:46, phase:"Desenvolvimento", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Ter",type:"easy",km:9,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"intervals",km:10,desc:"2 km easy + 4x2000m @4:45/km (rec 90s) + 2 km easy",pace:"5:30+4:45+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Sáb",type:"long+mp",km:22,desc:"16 km easy + 6 km @5:00/km — nutrição: 2 géis",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:10, dates:"21-27 Jul", km:34, phase:"Desenvolvimento", note:"⬇️ Descarga", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:9,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:8,desc:"2 km easy + 4 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"easy",km:5,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:12,desc:"Long run relaxado",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:11, dates:"28 Jul - 3 Ago", km:48, phase:"Desenvolvimento", note:"↗️ Rampa + bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Ter",type:"easy",km:10,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"tempo",km:10,desc:"2 km easy + 6 km @4:40/km + 2 km easy",pace:"5:30+4:40+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 45 min — nível 5-8, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Sáb",type:"long+mp",km:22,desc:"16 km easy + 6 km @5:00/km — nutrição: 2 géis",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:12, dates:"4-10 Ago", km:52, phase:"Desenvolvimento", note:"Bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Ter",type:"easy",km:10,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:12,desc:"2 km easy + 8 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 45 min — nível 5-8, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Banda + pesos leves (2-4 kg)"},
+    {day:"Sáb",type:"long",km:24,desc:"Long run a ritmo constante — nutrição: 2-3 géis",pace:"5:20-5:30/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:13, dates:"11-17 Ago", km:38, phase:"Específica", note:"⬇️ Descarga", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:10,desc:"Corrida fácil (ajustar pace ao calor)",pace:"5:45-6:15/km"},
+    {day:"Qua",type:"mp",km:8,desc:"2 km easy + 4 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:45-6:15/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:14,desc:"Long run relaxado, recuperar",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:14, dates:"18-24 Ago", km:47, phase:"Específica", note:"↗️ Rampa + bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:10,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"intervals",km:11,desc:"2 km easy + 3x2500m @4:45/km (rec 90s) + 2 km easy",pace:"5:30+4:45+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 45 min — nível 5-8, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Manter carga"},
+    {day:"Sáb",type:"long+mp",km:24,desc:"16 km easy + 8 km @5:00/km — nutrição: 3 géis",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:15, dates:"25-31 Ago", km:53, phase:"Específica", note:"Bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:11,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:12,desc:"2 km easy + 8 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 45 min — nível 5-8, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Manter carga"},
+    {day:"Sáb",type:"long",km:28,desc:"LONG RUN CHAVE — nutrição completa: 3-4 géis",pace:"5:20-5:30/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:16, dates:"1-7 Set", km:36, phase:"Específica", note:"⬇️ Descarga", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:10,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qui",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:12,desc:"Long run relaxado",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:17, dates:"8-14 Set", km:49, phase:"Específica", note:"↗️ Rampa + bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:11,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"tempo",km:10,desc:"2 km easy + 6 km @4:40/km + 2 km easy",pace:"5:30+4:40+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 45 min — nível 5-8, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Manter carga"},
+    {day:"Sáb",type:"long+mp",km:26,desc:"18 km easy + 8 km @5:00/km — nutrição: 3 géis",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:18, dates:"15-21 Set", km:55, phase:"Específica", note:"Simulação + bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:11,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"intervals",km:11,desc:"2 km easy + 3x3000m @4:45/km (rec 2 min) + 2 km easy",pace:"5:30+4:45+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 50 min — nível 6-9, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Manter carga"},
+    {day:"Sáb",type:"long+mp",km:30,desc:"SIMULAÇÃO: 20 km easy + 10 km @5:00/km — nutrição completa",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:19, dates:"22-28 Set", km:55, phase:"Específica", note:"Long run máximo + bike", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"Manter carga"},
+    {day:"Ter",type:"easy",km:11,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:12,desc:"2 km easy + 8 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"cross",km:0,desc:"Bicicleta 50 min — nível 6-9, 85-95 rpm",pace:"Z2: 120-140 bpm"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Manter carga"},
+    {day:"Sáb",type:"long+mp",km:32,desc:"LONG RUN MÁXIMO: 22 km easy + 10 km @5:00/km — nutrição completa",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:20, dates:"29 Set - 5 Out", km:43, phase:"Taper", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"2 séries, reduzir carga"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:10,desc:"2 km easy + 6 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long",km:20,desc:"Último long run grande — ritmo controlado",pace:"5:20-5:30/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:21, dates:"6-12 Out", km:37, phase:"Taper", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"2 séries"},
+    {day:"Ter",type:"easy",km:8,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"tempo",km:8,desc:"2 km easy + 4 km @4:40/km + 2 km easy",pace:"5:30+4:40+5:30"},
+    {day:"Qui",type:"recovery",km:5,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"strength",km:0,desc:"Ativação & Proteção (30 min)",pace:"Leve"},
+    {day:"Sáb",type:"long+mp",km:16,desc:"10 km easy + 6 km @5:00/km",pace:"5:30→5:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:22, dates:"13-19 Out", km:31, phase:"Taper", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (30 min)",pace:"2 séries"},
+    {day:"Ter",type:"easy",km:7,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:8,desc:"2 km easy + 4 km @5:00/km + 2 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:4,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"rest",km:0,desc:"Descanso",pace:"—"},
+    {day:"Sáb",type:"long",km:12,desc:"Long run relaxado",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:23, dates:"20-26 Out", km:25, phase:"Taper", note:"", days:[
+    {day:"Seg",type:"strength",km:0,desc:"Força & Estabilidade (20 min)",pace:"2 séries"},
+    {day:"Ter",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:7,desc:"1,5 km easy + 4 km @5:00/km + 1,5 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:4,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"rest",km:0,desc:"Descanso",pace:"—"},
+    {day:"Sáb",type:"long",km:8,desc:"Long run leve",pace:"5:30-5:45/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:24, dates:"27 Out - 2 Nov", km:18, phase:"Taper", note:"", days:[
+    {day:"Seg",type:"rest",km:0,desc:"Descanso",pace:"—"},
+    {day:"Ter",type:"easy",km:6,desc:"Corrida fácil",pace:"5:30-6:00/km"},
+    {day:"Qua",type:"mp",km:6,desc:"1 km easy + 4 km @5:00/km + 1 km easy",pace:"5:30+5:00+5:30"},
+    {day:"Qui",type:"recovery",km:3,desc:"Recuperação ativa",pace:"6:00-6:30/km"},
+    {day:"Sex",type:"rest",km:0,desc:"Descanso",pace:"—"},
+    {day:"Sáb",type:"easy",km:3,desc:"Shakeout — ativar pernas",pace:"5:30-6:00/km"},
+    {day:"Dom",type:"rest",km:0,desc:"Descanso total",pace:"—"}
+  ]},
+  { week:25, dates:"3-8 Nov", km:11, phase:"Prova", note:"🏁 MARATONA", days:[
+    {day:"Seg",type:"rest",km:0,desc:"Descanso",pace:"—"},
+    {day:"Ter",type:"easy",km:4,desc:"Corrida fácil",pace:"5:30/km"},
+    {day:"Qua",type:"strides",km:4,desc:"3 km easy + 4x100m acelerações suaves",pace:"5:30/km + sprints"},
+    {day:"Qui",type:"easy",km:3,desc:"Shakeout — ativar pernas",pace:"5:30/km"},
+    {day:"Sex",type:"rest",km:0,desc:"Preparação mental, logística",pace:"—"},
+    {day:"Sáb",type:"rest",km:0,desc:"Descanso total. Preparar equipamento.",pace:"—"},
+    {day:"Dom",type:"maratona",km:42.2,desc:"MARATONA DO PORTO — 3:30-3:35",pace:"5:00/km"}
+  ]}
+];
+
+// State
+let currentWeek = 0;
+let completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
+
+// Race date
+const RACE_DATE = new Date('2026-11-08');
+const PLAN_START = new Date('2026-05-19');
+
+function getDaysUntilRace() {
+  const now = new Date();
+  const diff = RACE_DATE - now;
+  return Math.max(0, Math.ceil(diff / (1000*60*60*24)));
+}
+
+function getCurrentWeekIndex() {
+  const now = new Date();
+  const diff = now - PLAN_START;
+  const weekNum = Math.floor(diff / (7*24*60*60*1000));
+  return Math.max(0, Math.min(weekNum, PLAN.length - 1));
+}
+
+function getCompletedCount() {
+  return Object.values(completed).filter(v => v).length;
+}
+
+function getCompletedKm() {
+  let km = 0;
+  for (const key in completed) {
+    if (!completed[key]) continue;
+    const [w, d] = key.split('-').map(Number);
+    const week = PLAN[w];
+    if (week && week.days[d]) km += week.days[d].km;
+  }
+  return km;
+}
+
+function getTotalSessions() {
+  return PLAN.reduce((sum, w) => sum + w.days.filter(d => d.type !== 'rest').length, 0);
+}
+
+function updateStats() {
+  const done = getCompletedCount();
+  const total = getTotalSessions();
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statKm').textContent = Math.round(getCompletedKm());
+  document.getElementById('statWeek').textContent = currentWeek + 1;
+  document.getElementById('statDays').textContent = getDaysUntilRace();
+  document.getElementById('progressFill').style.width = `${(done/total*100).toFixed(1)}%`;
+}
+
+function renderWeekChips() {
+  const container = document.getElementById('weekChips');
+  container.innerHTML = PLAN.map((w, i) => {
+    const active = i === currentWeek ? 'active' : '';
+    const label = w.note ? `S${w.week} ${w.note}` : `S${w.week}`;
+    return `<button class="chip ${active}" onclick="goToWeek(${i})">${label}</button>`;
+  }).join('');
+  // Scroll to active chip
+  setTimeout(() => {
+    const activeChip = container.querySelector('.active');
+    if (activeChip) activeChip.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+  }, 50);
+}
+
+function renderWeek() {
+  const week = PLAN[currentWeek];
+  document.getElementById('weekTitle').textContent = `Semana ${week.week} — ${week.km} km`;
+  document.getElementById('weekMeta').textContent = `${week.dates} | ${week.phase} ${week.note}`;
+  document.getElementById('prevWeek').disabled = currentWeek === 0;
+  document.getElementById('nextWeek').disabled = currentWeek === PLAN.length - 1;
+
+  const container = document.getElementById('weekContent');
+  container.innerHTML = week.days.map((day, i) => {
+    const key = `${currentWeek}-${i}`;
+    const isDone = completed[key];
+    const doneClass = isDone ? 'done' : '';
+    const checkedClass = isDone ? 'checked' : '';
+    const kmText = day.km > 0 ? `${day.km} km` : '';
+    return `
+      <div class="day-card ${doneClass}" data-type="${day.type}">
+        <button class="check-btn ${checkedClass}" onclick="toggleDay('${key}')">✓</button>
+        <div class="day-info">
+          <div class="day-header">
+            <span class="day-name">${day.day}</span>
+            <span class="day-km">${kmText}</span>
+          </div>
+          <div class="day-type">${formatType(day.type)}</div>
+          <div class="day-desc">${day.desc}</div>
+          <div class="day-pace">${day.pace}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  renderWeekChips();
+  updateStats();
+}
+
+function formatType(type) {
+  const map = {
+    'easy':'Easy','mp':'Marathon Pace','tempo':'Tempo','intervals':'Intervalos',
+    'long':'Long Run','long+mp':'Long Run + MP','strength':'Strength',
+    'cross':'Cross (Bike)','rest':'Descanso','recovery':'Recovery',
+    'strides':'Easy + Strides','maratona':'🏁 MARATONA'
+  };
+  return map[type] || type;
+}
+
+function toggleDay(key) {
+  completed[key] = !completed[key];
+  localStorage.setItem('maratona_completed', JSON.stringify(completed));
+  renderWeek();
+}
+
+function goToWeek(i) {
+  currentWeek = i;
+  renderWeek();
+}
+
+document.getElementById('prevWeek').addEventListener('click', () => {
+  if (currentWeek > 0) { currentWeek--; renderWeek(); }
+});
+document.getElementById('nextWeek').addEventListener('click', () => {
+  if (currentWeek < PLAN.length - 1) { currentWeek++; renderWeek(); }
+});
+
+// Swipe support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 80) {
+    if (diff < 0 && currentWeek < PLAN.length - 1) { currentWeek++; renderWeek(); }
+    if (diff > 0 && currentWeek > 0) { currentWeek--; renderWeek(); }
+  }
+});
+
+// Init
+currentWeek = getCurrentWeekIndex();
+renderWeek();
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+  </script>
+</body>
+</html>
