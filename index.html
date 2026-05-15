@@ -892,13 +892,13 @@ renderWeek();
 
 // Export data
 function exportData() {
-  let csv = 'Semana;Dia;Tipo;Km;Descrição;Pace;Feito\n';
+  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito\n';
   PLAN.forEach((week, wi) => {
     week.days.forEach((day, di) => {
       if (day.type === 'rest') return;
       const done = completed[`${wi}-${di}`] ? 'Sim' : 'Não';
-      const desc = day.desc.replace(/;/g, ',');
-      csv += `${week.week};${day.day};${day.type};${day.km};"${desc}";${day.pace};${done}\n`;
+      const desc = day.desc.replace(/,/g, ' ');
+      csv += `${week.week},${day.day},${day.type},${day.km},"${desc}",${day.pace},${done}\n`;
     });
   });
 
