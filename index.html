@@ -824,9 +824,12 @@ function renderWeek() {
     const kmText = day.km > 0 ? `${day.km} km` : '';
     const clickable = getWorkoutDetail(day) ? `onclick="openOverlay(${currentWeek},${i})"` : '';
     const cursorStyle = getWorkoutDetail(day) ? 'style="cursor:pointer"' : '';
+    const isRest = day.type === 'rest';
+    const checkBtn = isRest ? '<div style="width:28px"></div>' :
+      `<button class="check-btn ${checkedClass}" onclick="event.stopPropagation();toggleDay('${key}')">✓</button>`;
     return `
       <div class="day-card ${doneClass}" data-type="${day.type}" ${cursorStyle}>
-        <button class="check-btn ${checkedClass}" onclick="event.stopPropagation();toggleDay('${key}')">✓</button>
+        ${checkBtn}
         <div class="day-info" ${clickable}>
           <div class="day-header">
             <span class="day-name">${formatDay(day.day)}</span>
@@ -889,12 +892,13 @@ renderWeek();
 
 // Export data
 function exportData() {
-  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito\n';
+  let csv = 'Semana;Dia;Tipo;Km;Descrição;Pace;Feito\n';
   PLAN.forEach((week, wi) => {
     week.days.forEach((day, di) => {
+      if (day.type === 'rest') return;
       const done = completed[`${wi}-${di}`] ? 'Sim' : 'Não';
-      const desc = day.desc.replace(/,/g, ';');
-      csv += `${week.week},${day.day},${day.type},${day.km},"${desc}",${day.pace},${done}\n`;
+      const desc = day.desc.replace(/;/g, ',');
+      csv += `${week.week};${day.day};${day.type};${day.km};"${desc}";${day.pace};${done}\n`;
     });
   });
 
