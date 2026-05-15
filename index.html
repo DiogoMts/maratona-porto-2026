@@ -9,6 +9,82 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
   <link rel="manifest" href="manifest.json">
   <style>
+    /* Side navigation */
+    .nav-toggle {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 300;
+      background: #0f3460;
+      border: none;
+      color: #eee;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidenav {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: #16213e;
+      z-index: 250;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+      padding: 20px 0;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    }
+    .sidenav.open { left: 0; }
+    .sidenav-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 240;
+    }
+    .sidenav-overlay.open { display: block; }
+    .sidenav-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #0f3460;
+      margin-bottom: 8px;
+    }
+    .sidenav-header h2 { font-size: 1rem; }
+    .sidenav-header p { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
+    .sidenav-section { padding: 8px 0; }
+    .sidenav-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.5;
+      padding: 8px 20px 4px;
+    }
+    .sidenav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      color: #eee;
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+    .sidenav-item:hover { background: #0f3460; }
+    .sidenav-item.active { border-left-color: #e94560; background: #0f3460; }
+    .sidenav-item.danger { color: #e94560; }
+    .sidenav-item .nav-icon { width: 20px; text-align: center; }
+    @media (min-width: 768px) {
+      .sidenav { left: -280px; position: fixed; }
+      .sidenav.open { left: 0; }
+      .nav-toggle { display: flex; }
+      body { margin-left: 0; }
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -290,6 +366,34 @@
   </style>
 </head>
 <body>
+  <button class="nav-toggle" onclick="toggleNav()">☰</button>
+  <div class="sidenav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+  <nav class="sidenav" id="sidenav">
+    <div class="sidenav-header">
+      <h2>🏃 Maratona Porto</h2>
+      <p>8 Novembro 2026 — Diogo Matos</p>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Navegação</div>
+      <div class="sidenav-item active" onclick="navTo('plano')"><span class="nav-icon">📋</span> Plano semanal</div>
+      <div class="sidenav-item" onclick="navTo('progresso')"><span class="nav-icon">📊</span> Progresso</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Ações</div>
+      <div class="sidenav-item" onclick="exportData();toggleNav()"><span class="nav-icon">📤</span> Exportar CSV</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Dados</div>
+      <div class="sidenav-item" onclick="clearData('maratona_completed')"><span class="nav-icon">🗑️</span> Limpar sessões</div>
+      <div class="sidenav-item" onclick="clearData('maratona_exercises')"><span class="nav-icon">🗑️</span> Limpar exercícios</div>
+      <div class="sidenav-item" onclick="clearData('maratona_notes')"><span class="nav-icon">🗑️</span> Limpar notas</div>
+      <div class="sidenav-item danger" onclick="clearAllData()"><span class="nav-icon">⚠️</span> Reset completo</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Info</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.0.39</div>
+    </div>
+  </nav>
   <header>
     <h1>🏃 Maratona Porto 8 Nov 2026</h1>
     <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
@@ -320,10 +424,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
   </div>
   <div class="week-content" id="weekContent"></div>
-  <div style="text-align:center; padding: 16px;">
-    <button onclick="exportData()" style="background:#0f3460; border:none; color:#eee; padding:12px 20px; border-radius:8px; font-size:0.9rem; cursor:pointer;">📤 Exportar progresso</button>
-    <div style="margin-top:12px; font-size:0.75rem; opacity:0.4;">v0.0.37</div>
-  </div>
+  <div style="text-align:center; padding: 16px; font-size:0.75rem; opacity:0.4;">v0.0.43</div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
       <h2 id="overlayTitle"></h2>
@@ -1062,6 +1163,41 @@ function downloadFile(url) {
   a.download = 'maratona-progresso.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function toggleNav() {
+  document.getElementById('sidenav').classList.toggle('open');
+  document.getElementById('navOverlay').classList.toggle('open');
+}
+
+function navTo(page) {
+  // For now just close nav - can add page routing later
+  document.querySelectorAll('.sidenav-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  toggleNav();
+  if (page === 'plano') {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+function clearData(key) {
+  if (confirm(`Tens a certeza que queres limpar "${key.replace('maratona_','')}"?`)) {
+    localStorage.removeItem(key);
+    if (key === 'maratona_completed') completed = {};
+    renderWeek();
+    toggleNav();
+  }
+}
+
+function clearAllData() {
+  if (confirm('⚠️ Isto vai apagar TODOS os dados (sessões, exercícios e notas). Tens a certeza?')) {
+    localStorage.removeItem('maratona_completed');
+    localStorage.removeItem('maratona_exercises');
+    localStorage.removeItem('maratona_notes');
+    completed = {};
+    renderWeek();
+    toggleNav();
+  }
 }
 
 // Register service worker
