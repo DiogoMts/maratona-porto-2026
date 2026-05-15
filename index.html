@@ -267,6 +267,9 @@
     <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
   </div>
   <div class="week-content" id="weekContent"></div>
+  <div style="text-align:center; padding: 16px;">
+    <button onclick="exportData()" style="background:#0f3460; border:none; color:#eee; padding:12px 20px; border-radius:8px; font-size:0.9rem; cursor:pointer;">📤 Exportar progresso</button>
+  </div>
   <div class="overlay" id="overlay">
     <div class="overlay-header">
       <h2 id="overlayTitle"></h2>
@@ -883,6 +886,38 @@ document.addEventListener('touchend', e => {
 // Init
 currentWeek = getCurrentWeekIndex();
 renderWeek();
+
+// Export data
+function exportData() {
+  let csv = 'Semana,Dia,Tipo,Km,Descrição,Pace,Feito\n';
+  PLAN.forEach((week, wi) => {
+    week.days.forEach((day, di) => {
+      const done = completed[`${wi}-${di}`] ? 'Sim' : 'Não';
+      const desc = day.desc.replace(/,/g, ';');
+      csv += `${week.week},${day.day},${day.type},${day.km},"${desc}",${day.pace},${done}\n`;
+    });
+  });
+
+  // Try native share (mobile), fallback to download
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+
+  if (navigator.share) {
+    const file = new File([csv], 'maratona-progresso.csv', { type: 'text/csv' });
+    navigator.share({ title: 'Maratona Porto 2026 — Progresso', files: [file] })
+      .catch(() => downloadFile(url));
+  } else {
+    downloadFile(url);
+  }
+}
+
+function downloadFile(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'maratona-progresso.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 // Register service worker
 if ('serviceWorker' in navigator) {
