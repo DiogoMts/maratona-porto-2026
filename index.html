@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#e94560">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Maratona Porto 2026</title>
+  <title>Maratona Porto 9 Novembro 2026</title>
   <link rel="manifest" href="manifest.json">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -179,11 +179,65 @@
       height: 8px;
       border-radius: 50%;
     }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      padding: 20px;
+      overflow-y: auto;
+      animation: fadeIn 0.2s;
+    }
+    .overlay.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .overlay-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .overlay-header h2 { font-size: 1.1rem; }
+    .overlay-close {
+      background: #e94560;
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .overlay-content {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .overlay-content h3 {
+      font-size: 0.9rem;
+      color: #4ecca3;
+      margin: 12px 0 6px 0;
+    }
+    .overlay-content h3:first-child { margin-top: 0; }
+    .overlay-content p, .overlay-content li {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      opacity: 0.85;
+    }
+    .overlay-content ul { padding-left: 16px; margin: 4px 0; }
+    .overlay-content .exercise-item {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+    }
+    .overlay-content .exercise-name { font-weight: 600; font-size: 0.85rem; }
+    .overlay-content .exercise-detail { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
   </style>
 </head>
 <body>
   <header>
-    <h1>🏃 Maratona do Porto 2026</h1>
+    <h1>🏃 Maratona do Porto 8 Nov 2026</h1>
     <div class="subtitle">Diogo Matos — Objetivo: 3:30-3:35</div>
     <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
   </header>
@@ -213,6 +267,13 @@
     <div class="legend-item"><div class="legend-dot" style="background:#555"></div>Rest</div>
   </div>
   <div class="week-content" id="weekContent"></div>
+  <div class="overlay" id="overlay">
+    <div class="overlay-header">
+      <h2 id="overlayTitle"></h2>
+      <button class="overlay-close" onclick="closeOverlay()">✕</button>
+    </div>
+    <div class="overlay-content" id="overlayContent"></div>
+  </div>
 
   <script>
 const PLAN = [
@@ -443,6 +504,235 @@ const PLAN = [
   ]}
 ];
 
+// Workout details for overlay
+const WORKOUT_DETAILS = {
+  strength_forca: {
+    title: "Força & Estabilidade",
+    content: `
+      <h3>Formato</h3>
+      <p>3 séries seguidas do mesmo exercício. Descanso 30s entre séries, 45s entre exercícios.</p>
+      <h3>Exercícios</h3>
+      <div class="exercise-item">
+        <div class="exercise-name">1. Single-leg deadlift — 3x10/lado</div>
+        <div class="exercise-detail">Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">2. Step-ups (banco 30cm) — 3x10/lado</div>
+        <div class="exercise-detail">Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">3. Pontes de glúteo (unilateral) — 3x10/lado</div>
+        <div class="exercise-detail">Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">4. Calf raises (unilateral) — 3x10/lado</div>
+        <div class="exercise-detail">Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">5. Prancha frontal — 3x30-45s</div>
+        <div class="exercise-detail">Core. Corpo em linha recta, apertar abdominais e glúteos.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">6. Prancha lateral — 3x20-30s/lado</div>
+        <div class="exercise-detail">Oblíquos + estabilidade. Anca não pode cair.</div>
+      </div>
+    `
+  },
+  strength_ativacao: {
+    title: "Ativação & Proteção",
+    content: `
+      <h3>Formato</h3>
+      <p>3 séries seguidas do mesmo exercício. Descanso 20s entre séries, 30s entre exercícios. Sessão leve — prepara para o long run de sábado.</p>
+      <h3>Exercícios</h3>
+      <div class="exercise-item">
+        <div class="exercise-name">1. Pontes de glúteo (bilateral) — 3x15</div>
+        <div class="exercise-detail">Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">2. Pontes de glúteo (unilateral) — 3x10/lado</div>
+        <div class="exercise-detail">Estabilidade pélvica. Manter pélvis nivelada, não rodar.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">3. Clamshells com banda — 3x15/lado</div>
+        <div class="exercise-detail">Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">4. Side-lying hip abduction — 3x12/lado</div>
+        <div class="exercise-detail">Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">5. Calf raises (bilateral) — 3x15</div>
+        <div class="exercise-detail">Gémeos — manutenção. Ritmo: 2s subir, 2s descer.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">6. Prancha frontal — 3x30-45s</div>
+        <div class="exercise-detail">Core. Corpo em linha recta.</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">7. Prancha lateral — 3x20-30s/lado</div>
+        <div class="exercise-detail">Oblíquos + estabilidade.</div>
+      </div>
+    `
+  },
+  cross_bike: {
+    title: "Cross-Training — Bicicleta Estática",
+    content: `
+      <h3>Equipamento</h3>
+      <p>MERACH S38 (MRK-S38-7473) — 16 níveis de resistência</p>
+      <h3>Protocolo (45-50 min)</h3>
+      <div class="exercise-item">
+        <div class="exercise-name">1. Aquecimento — 5 min</div>
+        <div class="exercise-detail">Nível 3, cadência livre</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">2. Zona 2 — 35-40 min</div>
+        <div class="exercise-detail">Nível 5-8, cadência 85-95 rpm, FC 120-140 bpm</div>
+      </div>
+      <div class="exercise-item">
+        <div class="exercise-name">3. Retorno à calma — 5 min</div>
+        <div class="exercise-detail">Nível 2-3, cadência baixa</div>
+      </div>
+      <h3>Notas</h3>
+      <ul>
+        <li>Ajustar nível para manter FC entre 120-140 bpm</li>
+        <li>Se FC não sobe acima de 120 no nível 8, subir para 9-10</li>
+        <li>Sem impacto na anca — ideal para semanas de pico</li>
+      </ul>
+    `
+  }
+};
+
+function getWorkoutDetail(day) {
+  if (day.type === 'strength') {
+    if (day.desc.includes('Força')) return WORKOUT_DETAILS.strength_forca;
+    if (day.desc.includes('Ativação')) return WORKOUT_DETAILS.strength_ativacao;
+  }
+  if (day.type === 'cross') return WORKOUT_DETAILS.cross_bike;
+  // Running workouts - generate detail from the day data
+  if (['easy','mp','tempo','intervals','long','long+mp','recovery','strides'].includes(day.type)) {
+    return getRunningDetail(day);
+  }
+  return null;
+}
+
+function getRunningDetail(day) {
+  const typeNames = {
+    'easy':'Corrida Fácil','mp':'Marathon Pace','tempo':'Tempo',
+    'intervals':'Intervalos','long':'Long Run','long+mp':'Long Run + MP',
+    'recovery':'Recuperação Ativa','strides':'Easy + Strides'
+  };
+  
+  const typeDescriptions = {
+    'easy': `<p>Corrida conversacional. Deves conseguir falar frases completas sem esforço.</p>
+      <ul>
+        <li>FC alvo: 130-145 bpm</li>
+        <li>Não olhar para o pace — guiar pela sensação e FC</li>
+        <li>Se não consegues falar, estás demasiado rápido</li>
+      </ul>`,
+    'recovery': `<p>Corrida muito leve, quase a caminhar rápido. Objectivo é mover as pernas sem stress.</p>
+      <ul>
+        <li>FC alvo: &lt;130 bpm</li>
+        <li>Deve parecer "demasiado lento"</li>
+        <li>Ajuda a recuperar da sessão anterior</li>
+      </ul>`,
+    'mp': `<p>Ritmo objectivo de maratona. Deve parecer controlado e sustentável.</p>
+      <ul>
+        <li>FC alvo: 145-155 bpm</li>
+        <li>Pace: 4:58-5:05/km</li>
+        <li>Estrutura: aquecimento easy → bloco a ritmo MP → retorno easy</li>
+        <li>Não acelerar acima do pace — disciplina!</li>
+      </ul>`,
+    'tempo': `<p>Ritmo "confortavelmente duro". Podes falar palavras soltas mas não frases.</p>
+      <ul>
+        <li>FC alvo: 155-168 bpm</li>
+        <li>Pace: 4:35-4:45/km</li>
+        <li>Estrutura: aquecimento easy → bloco tempo → retorno easy</li>
+        <li>Manter ritmo constante, não acelerar no final</li>
+      </ul>`,
+    'intervals': `<p>Intervalos longos a ritmo forte. Proteger o recto femoral — sem sprints explosivos.</p>
+      <ul>
+        <li>FC alvo: 160-172 bpm</li>
+        <li>Pace: 4:40-4:50/km (NÃO abaixo de 4:30!)</li>
+        <li>Recuperação: jogging leve entre repetições</li>
+        <li>Se sentir dor na coxa direita, parar imediatamente</li>
+      </ul>`,
+    'long': `<p>Corrida longa — a sessão mais importante da semana. Ritmo controlado.</p>
+      <ul>
+        <li>FC alvo: 130-150 bpm</li>
+        <li>Começar devagar, nunca acelerar na primeira metade</li>
+        <li>Superfície plana (marginal) — evitar calçada</li>
+        <li>Hidratar a cada 30 min</li>
+        <li>Se pace cardíaco drift &gt;10%, abrandar ou caminhar</li>
+      </ul>`,
+    'long+mp': `<p>Corrida longa com km finais a ritmo maratona. Simula a fadiga da prova.</p>
+      <ul>
+        <li>FC: 130-150 bpm (easy) → 145-155 bpm (MP)</li>
+        <li>Primeira parte DEVE ser fácil — guardar energia para o bloco MP</li>
+        <li>Bloco MP no final simula os últimos km da maratona</li>
+        <li>Praticar nutrição durante esta sessão</li>
+        <li>Se não conseguir manter pace MP, abrandar — não forçar</li>
+      </ul>`,
+    'strides': `<p>Corrida fácil com acelerações curtas no final. Activa o sistema neuromuscular.</p>
+      <ul>
+        <li>Acelerações de ~100m, progressivas (não sprint máximo)</li>
+        <li>Recuperação completa entre cada (caminhar/jogging 60-90s)</li>
+        <li>Foco na técnica: cadência alta, postura, braços</li>
+        <li>Não devem causar fadiga</li>
+      </ul>`
+  };
+
+  let content = typeDescriptions[day.type] || '';
+  
+  if (day.km > 0) {
+    content = `<h3>Sessão de hoje</h3>
+      <div class="exercise-item">
+        <div class="exercise-name">${day.desc}</div>
+        <div class="exercise-detail">${day.km} km — Pace: ${day.pace}</div>
+      </div>
+      <h3>Como executar</h3>` + content;
+  }
+
+  // Add nutrition note for long runs >= 18km
+  if ((day.type === 'long' || day.type === 'long+mp') && day.km >= 18) {
+    content += `<h3>Nutrição</h3>
+      <ul>
+        <li>Gel a cada ~30-40 min de corrida</li>
+        <li>Beber água com o gel</li>
+        <li>Testar marcas/sabores — nunca nada novo na prova</li>
+      </ul>`;
+  }
+
+  // Add hip safety note for intervals and long runs
+  if (day.type === 'intervals' || (day.km >= 24)) {
+    content += `<h3>⚠️ Segurança (anca direita)</h3>
+      <ul>
+        <li>Se dor na anca/virilha: parar e caminhar de volta</li>
+        <li>Se dor persistir &gt;24h: saltar próxima sessão</li>
+      </ul>`;
+  }
+
+  return { title: typeNames[day.type] || day.type, content };
+}
+
+function openOverlay(weekIdx, dayIdx) {
+  const day = PLAN[weekIdx].days[dayIdx];
+  const detail = getWorkoutDetail(day);
+  if (!detail) return;
+  document.getElementById('overlayTitle').textContent = detail.title;
+  document.getElementById('overlayContent').innerHTML = detail.content;
+  document.getElementById('overlay').classList.add('active');
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('active');
+}
+
+// Close overlay on back button or escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOverlay(); });
+document.getElementById('overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('overlay')) closeOverlay();
+});
+
 // State
 let currentWeek = 0;
 let completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
@@ -507,6 +797,14 @@ function renderWeekChips() {
   }, 50);
 }
 
+function formatDay(abbr) {
+  const map = {
+    'Seg':'Segunda-feira','Ter':'Terça-feira','Qua':'Quarta-feira',
+    'Qui':'Quinta-feira','Sex':'Sexta-feira','Sáb':'Sábado','Dom':'Domingo'
+  };
+  return map[abbr] || abbr;
+}
+
 function renderWeek() {
   const week = PLAN[currentWeek];
   document.getElementById('weekTitle').textContent = `Semana ${week.week} — ${week.km} km`;
@@ -521,12 +819,14 @@ function renderWeek() {
     const doneClass = isDone ? 'done' : '';
     const checkedClass = isDone ? 'checked' : '';
     const kmText = day.km > 0 ? `${day.km} km` : '';
+    const clickable = getWorkoutDetail(day) ? `onclick="openOverlay(${currentWeek},${i})"` : '';
+    const cursorStyle = getWorkoutDetail(day) ? 'style="cursor:pointer"' : '';
     return `
-      <div class="day-card ${doneClass}" data-type="${day.type}">
-        <button class="check-btn ${checkedClass}" onclick="toggleDay('${key}')">✓</button>
-        <div class="day-info">
+      <div class="day-card ${doneClass}" data-type="${day.type}" ${cursorStyle}>
+        <button class="check-btn ${checkedClass}" onclick="event.stopPropagation();toggleDay('${key}')">✓</button>
+        <div class="day-info" ${clickable}>
           <div class="day-header">
-            <span class="day-name">${day.day}</span>
+            <span class="day-name">${formatDay(day.day)}</span>
             <span class="day-km">${kmText}</span>
           </div>
           <div class="day-type">${formatType(day.type)}</div>
