@@ -393,7 +393,7 @@
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
-      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.1.5</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> v0.1.1</div>
     </div>
   </nav>
   <header>
@@ -1214,10 +1214,11 @@ function clearData(key) {
 }
 
 function clearAllData() {
-  if (confirm('⚠️ Isto vai apagar TODOS os dados (sessões, exercícios e notas). Tens a certeza?')) {
+  if (confirm('⚠️ Isto vai apagar TODOS os dados (sessões, exercícios, notas e suplementos). Tens a certeza?')) {
     localStorage.removeItem('maratona_completed');
     localStorage.removeItem('maratona_exercises');
     localStorage.removeItem('maratona_notes');
+    localStorage.removeItem('maratona_supps');
     completed = {};
     renderWeek();
     toggleNav();
