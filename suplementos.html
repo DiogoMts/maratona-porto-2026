@@ -41,14 +41,14 @@
     .day-tab { background: #0f3460; border: none; color: #eee; padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; text-align: center; min-width: 44px; }
     .day-tab.active { background: #e94560; }
     .section-title { font-size: 0.95rem; color: #4ecca3; margin: 12px 0 8px; padding: 0 4px; }
-    .supp-card { background: #16213e; border-radius: 10px; padding: 12px 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; border-left: 4px solid #4ecca3; }
+    .supp-card { background: #16213e; border-radius: 10px; padding: 12px 14px; margin-bottom: 6px; display: flex; align-items: flex-start; gap: 12px; border-left: 4px solid #4ecca3; }
     .supp-card.done { opacity: 0.5; }
     .supp-card.done .supp-name { text-decoration: line-through; }
     .supp-card.extra { border-left-color: #f9a825; }
-    .supp-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #555; background: transparent; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; color: transparent; font-size: 13px; }
+    .supp-check { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #555; background: transparent; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; color: transparent; font-size: 13px; margin-top: 2px; }
     .supp-check.checked { background: #4ecca3; border-color: #4ecca3; color: #1a1a2e; }
-    .supp-info { flex: 1; }
-    .supp-goal { font-size: 0.7rem; color: #4ecca3; background: #0f3460; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; align-self: center; }
+    .supp-info { flex: 1; min-width: 0; }
+    .supp-goal { font-size: 0.7rem; color: #4ecca3; background: #0f3460; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-top: 4px; }
     .supp-note { font-size: 0.8rem; opacity: 0.6; margin-top: 6px; line-height: 1.5; font-style: italic; }
     .supp-time { font-size: 0.75rem; opacity: 0.6; }
     .supp-name { font-size: 0.9rem; font-weight: 600; }
@@ -265,9 +265,9 @@ function renderDay() {
           <div class="supp-time">${s.time}</div>
           <div class="supp-name">${s.name}</div>
           <div class="supp-detail">${s.detail}</div>
+          <div class="supp-goal">${s.goal}</div>
           <div class="supp-note">ℹ️ ${s.note}</div>
         </div>
-        <div class="supp-goal">${s.goal}</div>
       </div>`;
   }).join('');
 
