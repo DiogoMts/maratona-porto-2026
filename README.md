@@ -58,8 +58,3 @@ manifest.json    — PWA manifest
 icon-192.png     — Ícone 192x192
 icon-512.png     — Ícone 512x512
 ```
-
-## Atleta
-- **Diogo Matos**, 48 anos, Cascais
-- Objectivo: 3:30-3:35 na Maratona do Porto
-- VO₂ Max: 61 ml/kg/min | 10K PB: 40:47
