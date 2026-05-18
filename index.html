@@ -785,34 +785,39 @@ function getRunningDetail(day) {
         <li>FC alvo: 130-145 bpm</li>
         <li>Não olhar para o pace — guiar pela sensação e FC</li>
         <li>Se não consegues falar, estás demasiado rápido</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'recovery': `<p>Corrida muito leve, quase a caminhar rápido. Objectivo é mover as pernas sem stress.</p>
       <ul>
         <li>FC alvo: &lt;130 bpm</li>
         <li>Deve parecer "demasiado lento"</li>
         <li>Ajuda a recuperar da sessão anterior</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Versablast 4</strong></p>`,
     'mp': `<p>Ritmo objectivo de maratona. Deve parecer controlado e sustentável.</p>
       <ul>
         <li>FC alvo: 145-155 bpm</li>
         <li>Pace: 4:58-5:05/km</li>
         <li>Estrutura: aquecimento easy → bloco a ritmo MP → retorno easy</li>
         <li>Não acelerar acima do pace — disciplina!</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'tempo': `<p>Ritmo "confortavelmente duro". Podes falar palavras soltas mas não frases.</p>
       <ul>
         <li>FC alvo: 155-168 bpm</li>
         <li>Pace: 4:35-4:45/km</li>
         <li>Estrutura: aquecimento easy → bloco tempo → retorno easy</li>
         <li>Manter ritmo constante, não acelerar no final</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'intervals': `<p>Intervalos longos a ritmo forte. Proteger o recto femoral — sem sprints explosivos.</p>
       <ul>
         <li>FC alvo: 160-172 bpm</li>
         <li>Pace: 4:40-4:50/km (NÃO abaixo de 4:30!)</li>
         <li>Recuperação: jogging leve entre repetições</li>
         <li>Se sentir dor na coxa direita, parar imediatamente</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'long': `<p>Corrida longa — a sessão mais importante da semana. Ritmo controlado.</p>
       <ul>
         <li>FC alvo: 130-150 bpm</li>
@@ -820,7 +825,8 @@ function getRunningDetail(day) {
         <li>Superfície plana (marginal) — evitar calçada</li>
         <li>Hidratar a cada 30 min</li>
         <li>Se pace cardíaco drift &gt;10%, abrandar ou caminhar</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'long+mp': `<p>Corrida longa com km finais a ritmo maratona. Simula a fadiga da prova.</p>
       <ul>
         <li>FC: 130-150 bpm (easy) → 145-155 bpm (MP)</li>
@@ -828,14 +834,16 @@ function getRunningDetail(day) {
         <li>Bloco MP no final simula os últimos km da maratona</li>
         <li>Praticar nutrição durante esta sessão</li>
         <li>Se não conseguir manter pace MP, abrandar — não forçar</li>
-      </ul>`,
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
     'strides': `<p>Corrida fácil com acelerações curtas no final. Activa o sistema neuromuscular.</p>
       <ul>
         <li>Acelerações de ~100m, progressivas (não sprint máximo)</li>
         <li>Recuperação completa entre cada (caminhar/jogging 60-90s)</li>
         <li>Foco na técnica: cadência alta, postura, braços</li>
         <li>Não devem causar fadiga</li>
-      </ul>`
+      </ul>
+      <p><strong>👟 Ténis: Novablast 5</strong></p>`
   };
 
   let content = typeDescriptions[day.type] || '';
@@ -1005,6 +1013,13 @@ function formatDay(abbr) {
   return map[abbr] || abbr;
 }
 
+function getShoe(type) {
+  if (type === 'recovery') return 'Versablast 4';
+  if (type === 'strength') return 'Versablast 4';
+  if (['easy','mp','tempo','intervals','long','long+mp','strides'].includes(type)) return 'Novablast 5';
+  return '';
+}
+
 function renderWeek() {
   const week = PLAN[currentWeek];
   document.getElementById('weekTitle').textContent = `Semana ${week.week} — ${week.km} km`;
@@ -1046,6 +1061,7 @@ function renderWeek() {
           <div class="day-type">${formatType(day.type)}</div>
           <div class="day-desc">${day.desc}</div>
           <div class="day-pace">${day.pace}</div>
+          ${getShoe(day.type) ? `<div class="day-pace" style="color:#4ecca3;">👟 ${getShoe(day.type)}</div>` : ''}
           ${getNote(`${currentWeek}-${i}`) ? `<div class="day-note">📝 ${getNote(`${currentWeek}-${i}`).substring(0,40)}${getNote(`${currentWeek}-${i}`).length > 40 ? '...' : ''}</div>` : ''}
         </div>
       </div>
