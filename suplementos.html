@@ -143,28 +143,40 @@ const DAY_SHORT = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 
 const SUPPS_BY_TYPE = {
   corrida: [
-    {time:"5:30", name:"Artrozen + Vitamina C 500mg", detail:"30 min antes da corrida", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino. Protege tendões e cartilagem da anca durante o exercício."},
-    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Não causa retenção de água significativa. Ómega-3: anti-inflamatório, saúde articular. Vitamina D: mesmo com sol em Portugal, muitos atletas têm défice. Objetivo: 40-60 ng/mL."},
-    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
+    {time:"5:30", name:"Artrozen", detail:"30 min antes da corrida", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino. Protege tendões e cartilagem da anca."},
+    {time:"5:30", name:"Vitamina C 500mg", detail:"Tomar com o Artrozen", goal:"Potencia síntese de colagénio", note:"Potencia a absorção do Artrozen."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino."},
+    {time:"Almoço", name:"Creatina 5g", detail:"Com refeição", goal:"Força muscular, recuperação", note:"Segura e bem estudada. Tomar todos os dias."},
+    {time:"Almoço", name:"Ómega-3 (EPA+DHA) 2-3g", detail:"Com refeição", goal:"Anti-inflamatório, saúde articular", note:"Tomar com gordura para melhor absorção."},
+    {time:"Almoço", name:"Vitamina D 2000-4000 UI", detail:"Com refeição (gordura)", goal:"Saúde óssea, muscular, imunidade", note:"Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Melhor absorção que óxido. Ajuda no sono."}
   ],
   strength: [
-    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"30 min antes do treino", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino. Protege tendões e cartilagem da anca durante o exercício."},
-    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino. Combinar com banana (hidratos) para melhor absorção."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: segura e bem estudada. Benefícios para força, recuperação e saúde cognitiva. Ómega-3: anti-inflamatório, saúde articular. Vitamina D: objetivo 40-60 ng/mL."},
-    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção e menos efeitos GI que óxido de magnésio. Ajuda no sono — tomar ao deitar."}
+    {time:"Manhã", name:"Artrozen", detail:"30 min antes do treino", goal:"Tendões, cartilagem, articulações (anca!)", note:"Tomar 30 min antes do treino."},
+    {time:"Manhã", name:"Vitamina C 500mg", detail:"Tomar com o Artrozen", goal:"Potencia síntese de colagénio", note:"Potencia a absorção do Artrozen."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Até 30 min após", goal:"Síntese proteica muscular, recuperação", note:"Janela anabólica pós-treino."},
+    {time:"Almoço", name:"Creatina 5g", detail:"Com refeição", goal:"Força muscular, recuperação", note:"Tomar todos os dias."},
+    {time:"Almoço", name:"Ómega-3 (EPA+DHA) 2-3g", detail:"Com refeição", goal:"Anti-inflamatório, saúde articular", note:"Tomar com gordura."},
+    {time:"Almoço", name:"Vitamina D 2000-4000 UI", detail:"Com refeição (gordura)", goal:"Saúde óssea, muscular, imunidade", note:"Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Ajuda no sono."}
   ],
   cross: [
-    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"Manter rotina", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter mesmo sem impacto. Protege a cartilagem da anca."},
-    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Após a bike", goal:"Síntese proteica muscular, recuperação", note:"Mesmo em dias de bike, a proteína pós-treino ajuda na recuperação."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Com refeição (gordura ajuda absorção)", goal:"Força, proteção articular + anti-inflamatório + ossos", note:"Creatina: tomar todos os dias, não só em dias de treino. Ómega-3: anti-inflamatório. Vitamina D: objetivo 40-60 ng/mL."},
-    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Bisglicinato tem melhor absorção. Ajuda no sono — tomar ao deitar."}
+    {time:"Manhã", name:"Artrozen", detail:"Manter rotina", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter mesmo sem impacto."},
+    {time:"Manhã", name:"Vitamina C 500mg", detail:"Tomar com o Artrozen", goal:"Potencia síntese de colagénio", note:"Potencia a absorção do Artrozen."},
+    {time:"Pós-treino", name:"Proteína Whey 25g + banana", detail:"Após a bike", goal:"Síntese proteica muscular, recuperação", note:"Proteína pós-treino mesmo em dias de bike."},
+    {time:"Almoço", name:"Creatina 5g", detail:"Com refeição", goal:"Força muscular, recuperação", note:"Tomar todos os dias."},
+    {time:"Almoço", name:"Ómega-3 (EPA+DHA) 2-3g", detail:"Com refeição", goal:"Anti-inflamatório, saúde articular", note:"Tomar com gordura."},
+    {time:"Almoço", name:"Vitamina D 2000-4000 UI", detail:"Com refeição (gordura)", goal:"Saúde óssea, muscular, imunidade", note:"Objetivo: 40-60 ng/mL."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Ajuda no sono."}
   ],
   descanso: [
-    {time:"Manhã", name:"Artrozen + Vitamina C 500mg", detail:"Manter mesmo em descanso", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter todos os dias. Protege a cartilagem da anca."},
-    {time:"Almoço", name:"Creatina 5g + Ómega-3 + Vitamina D 2000-4000 UI", detail:"Tudo com refeição", goal:"Força + ossos + anti-inflamatório", note:"Creatina: tomar todos os dias para manter saturação muscular. Vitamina D com gordura para absorção."},
-    {time:"Lanche", name:"Proteína 20g (se necessário)", detail:"Se ingestão baixa", goal:"Síntese proteica muscular, recuperação", note:"Só se a ingestão proteica do dia for baixa. Fontes alimentares prioritárias: ovos, frango, peixe, iogurte grego."},
-    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Manter sempre, mesmo em descanso. Ajuda na recuperação durante o sono."}
+    {time:"Manhã", name:"Artrozen", detail:"Manter mesmo em descanso", goal:"Tendões, cartilagem, articulações (anca!)", note:"Manter todos os dias."},
+    {time:"Manhã", name:"Vitamina C 500mg", detail:"Tomar com o Artrozen", goal:"Potencia síntese de colagénio", note:"Potencia a absorção do Artrozen."},
+    {time:"Almoço", name:"Creatina 5g", detail:"Com refeição", goal:"Força muscular, recuperação", note:"Manter saturação muscular."},
+    {time:"Almoço", name:"Ómega-3 (EPA+DHA) 2-3g", detail:"Com refeição", goal:"Anti-inflamatório, saúde articular", note:"Tomar com gordura."},
+    {time:"Almoço", name:"Vitamina D 2000-4000 UI", detail:"Com refeição (gordura)", goal:"Saúde óssea, muscular, imunidade", note:"Objetivo: 40-60 ng/mL."},
+    {time:"Lanche", name:"Proteína 20g (se necessário)", detail:"Se ingestão baixa", goal:"Síntese proteica muscular", note:"Só se ingestão do dia for baixa."},
+    {time:"Deitar", name:"Magnésio 300-400mg", detail:"Bisglicinato", goal:"Recuperação muscular, sono, cãibras", note:"Manter sempre."}
   ]
 };
 
