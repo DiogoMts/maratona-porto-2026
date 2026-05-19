@@ -152,23 +152,9 @@ function pullFromCloud() {
 }
 
 // Listen for real-time changes from other devices
+// DISABLED - was causing infinite loops. Sync happens on page load and on each user action.
 function listenForChanges() {
-  if (!syncEnabled || !currentUser) return;
-  firebaseDb.ref('users/' + currentUser.uid).on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (!data) return;
-    isSyncingFromCloud = true;
-    if (data.completed && data.completed !== '{}') localStorage.setItem('maratona_completed', data.completed);
-    if (data.exercises && data.exercises !== '{}') localStorage.setItem('maratona_exercises', data.exercises);
-    if (data.notes && data.notes !== '{}') localStorage.setItem('maratona_notes', data.notes);
-    if (data.supps && data.supps !== '{}') localStorage.setItem('maratona_supps', data.supps);
-    isSyncingFromCloud = false;
-    if (typeof completed !== 'undefined') {
-      completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
-    }
-    if (typeof renderWeek === 'function') renderWeek();
-    if (typeof renderDay === 'function') renderDay();
-  });
+  // intentionally empty
 }
 
 // Override localStorage setItem to auto-sync
