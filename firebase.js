@@ -108,13 +108,16 @@ localStorage.setItem = function(key, value) {
 function updateSyncUI() {
   const el = document.getElementById('syncStatus');
   const btn = document.getElementById('syncBtn');
+  const userEl = document.getElementById('userDisplay');
   if (!el) return;
   if (currentUser) {
     el.innerHTML = `<span style="color:#4ecca3;">☁️ ${currentUser.displayName || 'Online'}</span>`;
     if (btn) btn.textContent = 'Logout';
+    if (userEl) userEl.textContent = currentUser.displayName || currentUser.email || '';
   } else {
     el.innerHTML = `<span style="opacity:0.5;">☁️ Offline (só leitura)</span>`;
     if (btn) btn.textContent = 'Login Google';
+    if (userEl) userEl.textContent = '';
   }
 }
 
