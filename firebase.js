@@ -97,11 +97,20 @@ function signOut() {
 // Sync data to cloud
 function pushToCloud() {
   if (!syncEnabled || !currentUser) return;
+  const completed = localStorage.getItem('maratona_completed') || '{}';
+  const exercises = localStorage.getItem('maratona_exercises') || '{}';
+  const notes = localStorage.getItem('maratona_notes') || '{}';
+  const supps = localStorage.getItem('maratona_supps') || '{}';
+  
+  // Only push if there's actual data (not all empty)
+  const hasData = completed !== '{}' || exercises !== '{}' || notes !== '{}' || supps !== '{}';
+  if (!hasData) return;
+  
   const data = {
-    completed: localStorage.getItem('maratona_completed') || '{}',
-    exercises: localStorage.getItem('maratona_exercises') || '{}',
-    notes: localStorage.getItem('maratona_notes') || '{}',
-    supps: localStorage.getItem('maratona_supps') || '{}',
+    completed,
+    exercises,
+    notes,
+    supps,
     lastSync: new Date().toISOString()
   };
   firebaseDb.ref('users/' + currentUser.uid).set(data);
@@ -113,18 +122,20 @@ function pullFromCloud() {
   firebaseDb.ref('users/' + currentUser.uid).once('value').then((snapshot) => {
     const data = snapshot.val();
     if (!data) { 
-      // First time: push local data to cloud
+      // No cloud data: push local if we have any
       pushToCloud();
       return; 
     }
-    // Merge: for each key, use whichever has more entries (more data = more recent usage)
+    // Merge: for each key, combine local + cloud (keep all true values)
     const keys = ['completed', 'exercises', 'notes', 'supps'];
     keys.forEach(key => {
       const localData = JSON.parse(localStorage.getItem('maratona_' + key) || '{}');
       const cloudData = JSON.parse(data[key] || '{}');
-      // Merge: combine both, cloud wins on conflicts
-      const merged = {...localData, ...cloudData};
-      localStorage.setItem('maratona_' + key, JSON.stringify(merged));
+      // Only merge if cloud has actual data
+      if (Object.keys(cloudData).length > 0 || Object.keys(localData).length > 0) {
+        const merged = {...localData, ...cloudData};
+        localStorage.setItem('maratona_' + key, JSON.stringify(merged));
+      }
     });
     // Push merged data back to cloud
     pushToCloud();
