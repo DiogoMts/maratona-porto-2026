@@ -95,14 +95,12 @@ function pullFromCloud() {
   });
 }
 
-// Auto-push after any localStorage change (debounced)
-let pushTimer = null;
+// Auto-push after any localStorage change (immediate, no debounce)
 const originalSetItem = localStorage.setItem.bind(localStorage);
 localStorage.setItem = function(key, value) {
   originalSetItem(key, value);
   if (currentUser && key.startsWith('maratona_')) {
-    clearTimeout(pushTimer);
-    pushTimer = setTimeout(pushToCloud, 2000); // Wait 2s before pushing (debounce)
+    pushToCloud();
   }
 };
 
