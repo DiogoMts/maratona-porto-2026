@@ -322,10 +322,10 @@ function renderDay() {
   document.getElementById('dayContent').innerHTML = html;
 }
 
-function selectDay(i) { currentDayIdx = i; renderDayTabs(); renderDay(); }
-function goToWeek(i) { currentWeek = i; currentDayIdx = 0; render(); }
-function prevWeek() { if (currentWeek > 0) { currentWeek--; currentDayIdx = 0; render(); } }
-function nextWeek() { if (currentWeek < 24) { currentWeek++; currentDayIdx = 0; render(); } }
+function selectDay(i) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentDayIdx = i; renderDayTabs(); renderDay(); }
+function goToWeek(i) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentWeek = i; currentDayIdx = 0; render(); }
+function prevWeek() { if (currentWeek > 0) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentWeek--; currentDayIdx = 0; render(); } }
+function nextWeek() { if (currentWeek < 24) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentWeek++; currentDayIdx = 0; render(); } }
 
 function render() {
   renderWeekChips();

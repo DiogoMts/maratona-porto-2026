@@ -1122,15 +1122,16 @@ function toggleDay(key) {
 }
 
 function goToWeek(i) {
+  if (typeof pullFromCloud === 'function') pullFromCloud();
   currentWeek = i;
   renderWeek();
 }
 
 document.getElementById('prevWeek').addEventListener('click', () => {
-  if (currentWeek > 0) { currentWeek--; renderWeek(); }
+  if (currentWeek > 0) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentWeek--; renderWeek(); }
 });
 document.getElementById('nextWeek').addEventListener('click', () => {
-  if (currentWeek < PLAN.length - 1) { currentWeek++; renderWeek(); }
+  if (currentWeek < PLAN.length - 1) { if (typeof pullFromCloud === 'function') pullFromCloud(); currentWeek++; renderWeek(); }
 });
 
 // Swipe support
