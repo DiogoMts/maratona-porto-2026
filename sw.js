@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maratona-porto-v5';
+const CACHE_NAME = 'maratona-porto-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './ativacao.html',
   './suplementos.html',
   './version.js',
+  './firebase.js',
   './manifest.json'
 ];
 
@@ -26,11 +27,16 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = event.request.url;
+  if (url.includes('firebasedatabase.app') || url.includes('googleapis.com') || url.includes('gstatic.com')) return;
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        if (response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
         return response;
       })
       .catch(() => caches.match(event.request))
