@@ -39,24 +39,32 @@ async function initFirebase() {
   firebaseAuth = firebase.auth();
   firebaseDb = firebase.database();
   
+  // Set persistence to LOCAL (survives page reload)
+  await firebaseAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  
   // Handle redirect result (mobile sign-in)
-  firebaseAuth.getRedirectResult().then((result) => {
+  try {
+    const result = await firebaseAuth.getRedirectResult();
     if (result && result.user) {
-      console.log('Redirect login success:', result.user.displayName);
+      currentUser = result.user;
+      syncEnabled = true;
+      updateSyncUI();
+      pushToCloud();
+      pullFromCloud();
+      listenForChanges();
     }
-  }).catch(err => {
+  } catch(err) {
     if (err.code !== 'auth/no-auth-event') {
       alert('Erro login: ' + err.code + '\n' + err.message);
     }
-  });
+  }
   
-  // Listen for auth state
+  // Listen for auth state changes
   firebaseAuth.onAuthStateChanged((user) => {
     currentUser = user;
     syncEnabled = !!user;
     updateSyncUI();
     if (user) {
-      // Always push local data first, then pull and listen
       pushToCloud();
       pullFromCloud();
       listenForChanges();
