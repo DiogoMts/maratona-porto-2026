@@ -131,11 +131,14 @@ localStorage.setItem = function(key, value) {
 // UI helpers
 function updateSyncUI() {
   const el = document.getElementById('syncStatus');
+  const btn = document.getElementById('syncBtn');
   if (!el) return;
   if (syncEnabled && currentUser) {
     el.innerHTML = `<span style="color:#4ecca3;">☁️ ${currentUser.displayName || currentUser.email}</span>`;
+    if (btn) btn.textContent = 'Logout';
   } else {
     el.innerHTML = `<span style="opacity:0.5;">☁️ Offline</span>`;
+    if (btn) btn.textContent = 'Login Google';
   }
 }
 
@@ -144,7 +147,7 @@ function getSyncMenuHTML() {
     <div class="sidenav-section">
       <div class="sidenav-section-title">Sincronização</div>
       <div id="syncStatus" class="sidenav-item" style="cursor:default;"><span style="opacity:0.5;">☁️ A carregar...</span></div>
-      <div class="sidenav-item" onclick="syncEnabled ? signOut() : signIn()"><span class="nav-icon">🔑</span> <span id="syncBtn">Login Google</span></div>
+      <div class="sidenav-item" id="syncAction" onclick="syncEnabled ? signOut() : signIn()"><span class="nav-icon">🔑</span> <span id="syncBtn">Login Google</span></div>
     </div>
   `;
 }
