@@ -27,6 +27,17 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Only cache GET requests
+  if (event.request.method !== 'GET') return;
+  
+  // Don't cache Firebase/Google auth requests
+  const url = event.request.url;
+  if (url.includes('firebasedatabase.app') || 
+      url.includes('googleapis.com') || 
+      url.includes('gstatic.com/firebasejs')) {
+    return;
+  }
+
   // Always fetch from network first, fallback to cache for offline
   event.respondWith(
     fetch(event.request)
