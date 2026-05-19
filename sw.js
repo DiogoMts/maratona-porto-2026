@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maratona-porto-v5';
+const CACHE_NAME = 'maratona-porto-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './ativacao.html',
   './suplementos.html',
   './version.js',
+  './firebase.js',
   './manifest.json'
 ];
 
@@ -26,11 +27,15 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Always fetch from network first, fallback to cache for offline
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        // Update cache with fresh response
+        if (response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
         return response;
       })
       .catch(() => caches.match(event.request))
