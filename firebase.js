@@ -74,19 +74,18 @@ async function initFirebase() {
 
 function signIn() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  // Use redirect on mobile, popup on desktop
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    firebaseAuth.signInWithRedirect(provider).catch(err => {
-      alert('Erro redirect: ' + err.code + ' - ' + err.message);
-    });
-  } else {
-    firebaseAuth.signInWithPopup(provider).catch(err => {
-      console.error('Sign in error:', err);
-      // Fallback to redirect if popup blocked
+  firebaseAuth.signInWithPopup(provider).then((result) => {
+    if (result && result.user) {
+      alert('Login OK: ' + result.user.displayName);
+    }
+  }).catch(err => {
+    // If popup blocked, try redirect
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/popup-closed-by-user') {
       firebaseAuth.signInWithRedirect(provider);
-    });
-  }
+    } else {
+      alert('Erro: ' + err.code + '\n' + err.message);
+    }
+  });
 }
 
 function signOut() {
