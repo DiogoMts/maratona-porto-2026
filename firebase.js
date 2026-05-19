@@ -40,8 +40,14 @@ async function initFirebase() {
   firebaseDb = firebase.database();
   
   // Handle redirect result (mobile sign-in)
-  firebaseAuth.getRedirectResult().catch(err => {
-    if (err.code !== 'auth/no-auth-event') console.error('Redirect error:', err);
+  firebaseAuth.getRedirectResult().then((result) => {
+    if (result && result.user) {
+      console.log('Redirect login success:', result.user.displayName);
+    }
+  }).catch(err => {
+    if (err.code !== 'auth/no-auth-event') {
+      alert('Erro login: ' + err.code + '\n' + err.message);
+    }
   });
   
   // Listen for auth state
@@ -63,7 +69,9 @@ function signIn() {
   // Use redirect on mobile, popup on desktop
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
-    firebaseAuth.signInWithRedirect(provider);
+    firebaseAuth.signInWithRedirect(provider).catch(err => {
+      alert('Erro redirect: ' + err.code + ' - ' + err.message);
+    });
   } else {
     firebaseAuth.signInWithPopup(provider).catch(err => {
       console.error('Sign in error:', err);
