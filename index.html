@@ -1078,40 +1078,40 @@ function formatType(type) {
 
 function toggleDay(key) {
   if (typeof canEdit === 'function' && !canEdit()) { alert('Faz login para editar'); return; }
+  const [weekIdx, dayIdx] = key.split('-').map(Number);
+  const day = PLAN[weekIdx].days[dayIdx];
   const wasCompleted = completed[key];
-  completed[key] = !wasCompleted;
-  localStorage.setItem('maratona_completed', JSON.stringify(completed));
 
-  // If unchecking, also clear all individual exercise checkboxes
-  if (wasCompleted) {
-    const [weekIdx, dayIdx] = key.split('-').map(Number);
-    const day = PLAN[weekIdx].days[dayIdx];
-    if (day.type === 'strength') {
-      const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
-      const total = STRENGTH_EXERCISES[type].length;
-      const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+  if (day.type === 'strength') {
+    const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
+    const total = STRENGTH_EXERCISES[type].length;
+    const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+    
+    // Check if any exercises are marked
+    let anyMarked = false;
+    for (let j = 0; j < total; j++) {
+      if (exCompleted[`ex-${weekIdx}-${dayIdx}-${j}`]) { anyMarked = true; break; }
+    }
+
+    if (wasCompleted || anyMarked) {
+      // Unchecking: clear session + all exercises
+      completed[key] = false;
       for (let j = 0; j < total; j++) {
         delete exCompleted[`ex-${weekIdx}-${dayIdx}-${j}`];
       }
-      localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
-    }
-  }
-
-  // If checking via button, also mark all exercises as done
-  if (!wasCompleted) {
-    const [weekIdx, dayIdx] = key.split('-').map(Number);
-    const day = PLAN[weekIdx].days[dayIdx];
-    if (day.type === 'strength') {
-      const type = day.desc.includes('Força') ? 'forca' : 'ativacao';
-      const total = STRENGTH_EXERCISES[type].length;
-      const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+    } else {
+      // Checking: mark session + all exercises
+      completed[key] = true;
       for (let j = 0; j < total; j++) {
         exCompleted[`ex-${weekIdx}-${dayIdx}-${j}`] = true;
       }
-      localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
     }
+    localStorage.setItem('maratona_exercises', JSON.stringify(exCompleted));
+  } else {
+    completed[key] = !wasCompleted;
   }
 
+  localStorage.setItem('maratona_completed', JSON.stringify(completed));
   renderWeek();
 }
 
