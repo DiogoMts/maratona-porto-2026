@@ -79,6 +79,7 @@
     <div class="sidenav-section">
       <div class="sidenav-section-title">Ações</div>
       <div class="sidenav-item" onclick="exportSupps();toggleNav()"><span class="nav-icon">📤</span> Exportar CSV</div>
+      <div class="sidenav-item" onclick="exportJSON();toggleNav()"><span class="nav-icon">📋</span> Exportar JSON (raw)</div>
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
@@ -337,6 +338,24 @@ function toggleNav() {
 
 function toggleNote(el) {
   el.classList.toggle('expanded');
+}
+
+function exportJSON() {
+  const data = {
+    completed: JSON.parse(localStorage.getItem('maratona_completed') || '{}'),
+    exercises: JSON.parse(localStorage.getItem('maratona_exercises') || '{}'),
+    notes: JSON.parse(localStorage.getItem('maratona_notes') || '{}'),
+    supps: JSON.parse(localStorage.getItem('maratona_supps') || '{}'),
+    exportDate: new Date().toISOString()
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'maratona-backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function exportSupps() {
