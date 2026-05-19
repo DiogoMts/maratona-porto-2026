@@ -11,6 +11,7 @@ const firebaseConfig = {
 
 let firebaseApp, firebaseAuth, firebaseDb, currentUser = null;
 let syncEnabled = false;
+let isSyncingFromCloud = false;
 
 // Load Firebase SDK dynamically
 function loadFirebase() {
@@ -128,6 +129,7 @@ function pullFromCloud() {
     }
     // Merge: for each key, combine local + cloud (keep all true values)
     const keys = ['completed', 'exercises', 'notes', 'supps'];
+    isSyncingFromCloud = true;
     keys.forEach(key => {
       const localData = JSON.parse(localStorage.getItem('maratona_' + key) || '{}');
       const cloudData = JSON.parse(data[key] || '{}');
@@ -137,6 +139,7 @@ function pullFromCloud() {
         localStorage.setItem('maratona_' + key, JSON.stringify(merged));
       }
     });
+    isSyncingFromCloud = false;
     // Push merged data back to cloud
     pushToCloud();
     // Reload page state
@@ -154,10 +157,12 @@ function listenForChanges() {
   firebaseDb.ref('users/' + currentUser.uid).on('value', (snapshot) => {
     const data = snapshot.val();
     if (!data) return;
-    if (data.completed) localStorage.setItem('maratona_completed', data.completed);
-    if (data.exercises) localStorage.setItem('maratona_exercises', data.exercises);
-    if (data.notes) localStorage.setItem('maratona_notes', data.notes);
-    if (data.supps) localStorage.setItem('maratona_supps', data.supps);
+    isSyncingFromCloud = true;
+    if (data.completed && data.completed !== '{}') localStorage.setItem('maratona_completed', data.completed);
+    if (data.exercises && data.exercises !== '{}') localStorage.setItem('maratona_exercises', data.exercises);
+    if (data.notes && data.notes !== '{}') localStorage.setItem('maratona_notes', data.notes);
+    if (data.supps && data.supps !== '{}') localStorage.setItem('maratona_supps', data.supps);
+    isSyncingFromCloud = false;
     if (typeof completed !== 'undefined') {
       completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
     }
@@ -170,7 +175,7 @@ function listenForChanges() {
 const originalSetItem = localStorage.setItem.bind(localStorage);
 localStorage.setItem = function(key, value) {
   originalSetItem(key, value);
-  if (syncEnabled && key.startsWith('maratona_')) {
+  if (syncEnabled && key.startsWith('maratona_') && !isSyncingFromCloud) {
     pushToCloud();
   }
 };
