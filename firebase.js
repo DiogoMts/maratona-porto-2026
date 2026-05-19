@@ -50,6 +50,8 @@ async function initFirebase() {
     syncEnabled = !!user;
     updateSyncUI();
     if (user) {
+      // Always push local data first, then pull and listen
+      pushToCloud();
       pullFromCloud();
       listenForChanges();
     }
@@ -100,11 +102,17 @@ function pullFromCloud() {
       pushToCloud();
       return; 
     }
-    // Merge: cloud wins (most recent)
-    if (data.completed) localStorage.setItem('maratona_completed', data.completed);
-    if (data.exercises) localStorage.setItem('maratona_exercises', data.exercises);
-    if (data.notes) localStorage.setItem('maratona_notes', data.notes);
-    if (data.supps) localStorage.setItem('maratona_supps', data.supps);
+    // Merge: for each key, use whichever has more entries (more data = more recent usage)
+    const keys = ['completed', 'exercises', 'notes', 'supps'];
+    keys.forEach(key => {
+      const localData = JSON.parse(localStorage.getItem('maratona_' + key) || '{}');
+      const cloudData = JSON.parse(data[key] || '{}');
+      // Merge: combine both, cloud wins on conflicts
+      const merged = {...localData, ...cloudData};
+      localStorage.setItem('maratona_' + key, JSON.stringify(merged));
+    });
+    // Push merged data back to cloud
+    pushToCloud();
     // Reload page state
     if (typeof completed !== 'undefined') {
       completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
