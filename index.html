@@ -786,7 +786,7 @@ function getRunningDetail(day) {
         <li>Não olhar para o pace — guiar pela sensação e FC</li>
         <li>Se não consegues falar, estás demasiado rápido</li>
       </ul>
-      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
+      <p><strong>👟 Ténis: Versablast 4</strong></p>`,
     'recovery': `<p>Corrida muito leve, quase a caminhar rápido. Objectivo é mover as pernas sem stress.</p>
       <ul>
         <li>FC alvo: &lt;130 bpm</li>
@@ -809,7 +809,7 @@ function getRunningDetail(day) {
         <li>Estrutura: aquecimento easy → bloco tempo → retorno easy</li>
         <li>Manter ritmo constante, não acelerar no final</li>
       </ul>
-      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
+      <p><strong>👟 Ténis: Versablast 4</strong></p>`,
     'intervals': `<p>Intervalos longos a ritmo forte. Proteger o recto femoral — sem sprints explosivos.</p>
       <ul>
         <li>FC alvo: 160-172 bpm</li>
@@ -817,7 +817,7 @@ function getRunningDetail(day) {
         <li>Recuperação: jogging leve entre repetições</li>
         <li>Se sentir dor na coxa direita, parar imediatamente</li>
       </ul>
-      <p><strong>👟 Ténis: Novablast 5</strong></p>`,
+      <p><strong>👟 Ténis: Versablast 4</strong></p>`,
     'long': `<p>Corrida longa — a sessão mais importante da semana. Ritmo controlado.</p>
       <ul>
         <li>FC alvo: 130-150 bpm</li>
@@ -843,7 +843,7 @@ function getRunningDetail(day) {
         <li>Foco na técnica: cadência alta, postura, braços</li>
         <li>Não devem causar fadiga</li>
       </ul>
-      <p><strong>👟 Ténis: Novablast 5</strong></p>`
+      <p><strong>👟 Ténis: Versablast 4</strong></p>`
   };
 
   let content = typeDescriptions[day.type] || '';
@@ -1014,9 +1014,8 @@ function formatDay(abbr) {
 }
 
 function getShoe(type) {
-  if (type === 'recovery') return 'Versablast 4';
-  if (type === 'strength') return 'Versablast 4';
-  if (['easy','mp','tempo','intervals','long','long+mp','strides'].includes(type)) return 'Novablast 5';
+  if (['long','long+mp','mp'].includes(type)) return 'Novablast 5';
+  if (['easy','recovery','tempo','intervals','strides'].includes(type)) return 'Versablast 4';
   return '';
 }
 
