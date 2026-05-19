@@ -39,6 +39,11 @@ async function initFirebase() {
   firebaseAuth = firebase.auth();
   firebaseDb = firebase.database();
   
+  // Handle redirect result (mobile sign-in)
+  firebaseAuth.getRedirectResult().catch(err => {
+    if (err.code !== 'auth/no-auth-event') console.error('Redirect error:', err);
+  });
+  
   // Listen for auth state
   firebaseAuth.onAuthStateChanged((user) => {
     currentUser = user;
@@ -46,16 +51,24 @@ async function initFirebase() {
     updateSyncUI();
     if (user) {
       pullFromCloud();
+      listenForChanges();
     }
   });
 }
 
 function signIn() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  firebaseAuth.signInWithPopup(provider).catch(err => {
-    console.error('Sign in error:', err);
-    alert('Erro ao fazer login: ' + err.message);
-  });
+  // Use redirect on mobile, popup on desktop
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    firebaseAuth.signInWithRedirect(provider);
+  } else {
+    firebaseAuth.signInWithPopup(provider).catch(err => {
+      console.error('Sign in error:', err);
+      // Fallback to redirect if popup blocked
+      firebaseAuth.signInWithRedirect(provider);
+    });
+  }
 }
 
 function signOut() {
