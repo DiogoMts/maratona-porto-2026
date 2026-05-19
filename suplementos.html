@@ -81,10 +81,6 @@
       <div class="sidenav-item" onclick="exportSupps();toggleNav()"><span class="nav-icon">📤</span> Exportar CSV</div>
     </div>
     <div class="sidenav-section">
-      <div class="sidenav-section-title">Dados</div>
-      <div class="sidenav-item" onclick="clearSupps()"><span class="nav-icon">🗑️</span> Limpar suplementos</div>
-    </div>
-    <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
       <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> <span class="app-version">v0.1.0</span></div>
     </div>
@@ -337,14 +333,6 @@ function render() {
 function toggleNav() {
   document.getElementById('sidenav').classList.toggle('open');
   document.getElementById('navOverlay').classList.toggle('open');
-}
-
-function clearSupps() {
-  if (confirm('⚠️ Isto vai apagar TODOS os dados de suplementos marcados. Tens a certeza?')) {
-    localStorage.removeItem('maratona_supps');
-    toggleNav();
-    renderDay();
-  }
 }
 
 function toggleNote(el) {

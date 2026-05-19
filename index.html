@@ -383,13 +383,7 @@
     <div class="sidenav-section">
       <div class="sidenav-section-title">Ações</div>
       <div class="sidenav-item" onclick="exportData();toggleNav()"><span class="nav-icon">📤</span> Exportar CSV</div>
-    </div>
-    <div class="sidenav-section">
-      <div class="sidenav-section-title">Dados</div>
-      <div class="sidenav-item" onclick="clearData('maratona_completed')"><span class="nav-icon">🗑️</span> Limpar sessões</div>
-      <div class="sidenav-item" onclick="clearData('maratona_exercises')"><span class="nav-icon">🗑️</span> Limpar exercícios</div>
-      <div class="sidenav-item" onclick="clearData('maratona_notes')"><span class="nav-icon">🗑️</span> Limpar notas</div>
-      <div class="sidenav-item danger" onclick="clearAllData()"><span class="nav-icon">⚠️</span> Reset completo</div>
+      <div class="sidenav-item" onclick="exportJSON();toggleNav()"><span class="nav-icon">📋</span> Exportar JSON (raw)</div>
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Info</div>
@@ -1222,25 +1216,23 @@ function navTo(page) {
   }
 }
 
-function clearData(key) {
-  if (confirm(`Tens a certeza que queres limpar "${key.replace('maratona_','')}"?`)) {
-    localStorage.removeItem(key);
-    if (key === 'maratona_completed') completed = {};
-    renderWeek();
-    toggleNav();
-  }
-}
-
-function clearAllData() {
-  if (confirm('⚠️ Isto vai apagar TODOS os dados (sessões, exercícios, notas e suplementos). Tens a certeza?')) {
-    localStorage.removeItem('maratona_completed');
-    localStorage.removeItem('maratona_exercises');
-    localStorage.removeItem('maratona_notes');
-    localStorage.removeItem('maratona_supps');
-    completed = {};
-    renderWeek();
-    toggleNav();
-  }
+// Export raw JSON
+function exportJSON() {
+  const data = {
+    completed: JSON.parse(localStorage.getItem('maratona_completed') || '{}'),
+    exercises: JSON.parse(localStorage.getItem('maratona_exercises') || '{}'),
+    notes: JSON.parse(localStorage.getItem('maratona_notes') || '{}'),
+    supps: JSON.parse(localStorage.getItem('maratona_supps') || '{}'),
+    exportDate: new Date().toISOString()
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'maratona-backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // Register service worker
