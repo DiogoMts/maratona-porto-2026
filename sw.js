@@ -1,9 +1,7 @@
-const CACHE_NAME = 'maratona-porto-v8';
+const CACHE_NAME = 'maratona-porto-v9';
 const ASSETS = [
   './',
   './index.html',
-  './forca.html',
-  './ativacao.html',
   './suplementos.html',
   './version.js',
   './firebase.js',

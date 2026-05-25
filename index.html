@@ -340,6 +340,15 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      border-left: 4px solid #00bcd4;
+    }
+    .overlay-content .exercise-item span {
+      background: #16213e;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-right: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
     }
     .overlay-content .exercise-item .ex-check {
       width: 24px;
@@ -377,8 +386,6 @@
       <div class="sidenav-section-title">Navegação</div>
       <div class="sidenav-item active" onclick="navTo('plano')"><span class="nav-icon">📅</span> Plano de treino</div>
       <div class="sidenav-item" onclick="window.location.href='suplementos.html'"><span class="nav-icon">💊</span> Suplementos</div>
-      <div class="sidenav-item" onclick="window.location.href='forca.html'"><span class="nav-icon">💪</span> Exercícios Segunda</div>
-      <div class="sidenav-item" onclick="window.location.href='ativacao.html'"><span class="nav-icon">🦵</span> Exercícios Sexta</div>
     </div>
     <div class="sidenav-section">
       <div class="sidenav-section-title">Ações</div>
@@ -681,43 +688,48 @@ const WORKOUT_DETAILS = {
 
 const STRENGTH_EXERCISES = {
   forca: [
-    {name:'1. Single-leg deadlift — 3x10/lado', detail:'Isquiotibiais + equilíbrio + glúteo. Costas rectas, descer controlado (2-3s).', link:'https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift'},
-    {name:'2. Step-ups (banco 30cm) — 3x10/lado', detail:'Quadricípite + glúteo. Subir com a perna toda, não empurrar com a de trás.', link:'https://fitbod.me/exercises/step-up'},
-    {name:'3. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Apertar glúteo no topo 1-2s, não rodar a anca.', link:'https://fitbod.me/exercises/single-leg-glute-bridge'},
-    {name:'4. Calf raises (unilateral) — 3x10/lado', detail:'Gémeos — força. Num degrau, amplitude completa, 2s subir + 2s descer.', link:'https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise'},
-    {name:'5. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta, apertar abdominais e glúteos.', link:'https://www.zing.coach/exercises/plank'},
-    {name:'6. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade. Anca não pode cair.', link:'https://www.zing.coach/exercises/side-plank'}
+    {name:'1. Single-leg deadlift — 3x10/lado', focus:'Isquiotibiais + equilíbrio + glúteo', series:'<span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 45s', notes:['Manter costas rectas, olhar para o chão','Joelho de apoio ligeiramente flectido','Controlar a descida (2-3 segundos)','Se perder equilíbrio, tocar o pé no chão e recomeçar'], links:[{label:'Vídeo 1',url:'https://fitnessvolt.com/single-leg-romanian-deadlift/'},{label:'Vídeo 2',url:'https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift'}]},
+    {name:'2. Step-ups (banco 30cm) — 3x10/lado', focus:'Quadricípite + glúteo', series:'<span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 45s', notes:['Subir com a perna toda (não empurrar com a de trás)','Descer controlado','Banco/degrau estável, ~30 cm de altura','Se sentir dor na anca direita, reduzir altura do banco'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/step-up'},{label:'Vídeo 2',url:'https://exrx.net/WeightExercises/Quadriceps/BBStepUp'},{label:'Vídeo 3',url:'https://fitnessvolt.com/single-leg-step-up/'}]},
+    {name:'3. Pontes de glúteo (unilateral) — 3x10/lado', focus:'Estabilidade pélvica', series:'<span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 45s', notes:['Deitado de costas, um pé no chão, outro esticado','Subir a anca até alinhar com o joelho e ombro','Apertar o glúteo no topo (1-2 segundos)','Não deixar a anca rodar para o lado'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/single-leg-glute-bridge'},{label:'Vídeo 2',url:'https://fitnessvolt.com/24519/single-leg-glute-bridge/'}]},
+    {name:'4. Calf raises (unilateral) — 3x10/lado', focus:'Gémeos — força unilateral', series:'<span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 30s → <span>10 esq → 10 dir</span> 45s', notes:['Num degrau ou step, calcanhar a pender para fora','Subir até à ponta do pé, descer abaixo do nível do degrau','Controlar a descida (2 segundos)','Apoiar a mão na parede para equilíbrio'], links:[{label:'Vídeo 1',url:'https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise'},{label:'Vídeo 2',url:'https://fitnessvolt.com/cable-standing-calf-raise-guide/'}]},
+    {name:'5. Prancha frontal — 3x30-45s', focus:'Core', series:'<span>30-45s</span> 20s → <span>30-45s</span> 20s → <span>30-45s</span> 30s', notes:['Cotovelos debaixo dos ombros','Corpo em linha recta','Apertar abdominais e glúteos','Se 45s for fácil, progredir para 60s (semana 7+)'], links:[{label:'Vídeo 1',url:'https://fitnessvolt.com/front-plank/'},{label:'Vídeo 2',url:'https://fitbod.me/exercises/plank'}]},
+    {name:'6. Prancha lateral — 3x20-30s/lado', focus:'Oblíquos + estabilidade', series:'<span>20-30s esq → dir</span> 20s → <span>20-30s esq → dir</span> 20s → <span>20-30s esq → dir</span>', notes:['Cotovelo debaixo do ombro, corpo em linha','Anca não pode cair para o chão','Se difícil, apoiar joelho de baixo','Se 30s for fácil, progredir para 40s (semana 7+)'], links:[{label:'Vídeo 1',url:'https://fitnessvolt.com/side-plank/'},{label:'Vídeo 2',url:'https://fitbod.me/exercises/side-plank-lift'}]}
   ],
   ativacao: [
-    {name:'1. Pontes de glúteo (bilateral) — 3x15', detail:'Glúteo máximo — ativação. Pressionar calcanhares, segurar 2s no topo.', link:'https://www.zing.coach/exercises/glute-bridges'},
-    {name:'2. Pontes de glúteo (unilateral) — 3x10/lado', detail:'Estabilidade pélvica. Manter pélvis nivelada, não rodar.', link:'https://www.zing.coach/exercises/single-leg-glute-bridges'},
-    {name:'3. Clamshells com banda — 3x15/lado', detail:'Glúteo médio (tendinopatia). Joelhos a 90°, abrir sem rodar anca. Lento e controlado.', link:'https://www.zing.coach/exercises/band-clamshells'},
-    {name:'4. Side-lying hip abduction — 3x12/lado', detail:'Glúteo médio. Perna reta, levantar 30-40°, controlar a descida.', link:'https://www.vissco.com/physiotherapy-exercise/side-lying-leg-lift-with-theraband/'},
-    {name:'5. Calf raises (bilateral) — 3x15', detail:'Gémeos — manutenção. Ritmo: 2s subir, 2s descer.', link:'https://exrx.net/WeightExercises/Gastrocnemius/BWStandingCalfRaise'},
-    {name:'6. Prancha frontal — 3x30-45s', detail:'Core. Corpo em linha recta.', link:'https://www.zing.coach/exercises/plank'},
-    {name:'7. Prancha lateral — 3x20-30s/lado', detail:'Oblíquos + estabilidade.', link:'https://www.zing.coach/exercises/side-plank'}
+    {name:'1. Pontes de glúteo (bilateral) — 3x15', focus:'Glúteo máximo — ativação', series:'<span>15 reps</span> 20s → <span>15 reps</span> 20s → <span>15 reps</span> 30s', notes:['Deitar de costas com os joelhos dobrados','Levantar o quadril até formar uma linha reta','Pressionar pelos calcanhares, segurar 2s no topo','Erros comuns: quadril para cima demais, pés longe do corpo'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/hip-thrust-ac1b456c-4d43-4cbd-bcdc-a8a519852fdd'},{label:'Vídeo 2',url:'https://fitnessvolt.com/glute-bridge/'}]},
+    {name:'2. Pontes de glúteo (unilateral) — 3x10/lado', focus:'Estabilidade pélvica', series:'<span>10 esq → 10 dir</span> 20s → <span>10 esq → 10 dir</span> 20s → <span>10 esq → 10 dir</span> 30s', notes:['Uma perna esticada, outra com pé no chão','Subir a anca até alinhar com joelho e ombro','Manter a pélvis nivelada (não rodar)','Se sentir diferença entre lados, fazer o lado mais fraco primeiro'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/single-leg-glute-bridge'},{label:'Vídeo 2',url:'https://fitnessvolt.com/24519/single-leg-glute-bridge/'}]},
+    {name:'3. Clamshells com banda — 3x15/lado', focus:'Glúteo médio (tendinopatia)', series:'<span>15 esq → 15 dir</span> 20s → <span>15 esq → 15 dir</span> 20s → <span>15 esq → 15 dir</span> 30s', notes:['Deitado de lado, joelhos a 90°, pés juntos','Abrir o joelho de cima sem rodar a anca','Banda elástica acima dos joelhos','Movimento lento e controlado (não usar impulso)','Exercício chave para a tendinopatia do glúteo médio'], links:[{label:'Vídeo 1',url:'https://liftmanual.com/side-lying-clam/'},{label:'Vídeo 2',url:'https://fitbod.me/exercises/mini-loop-band-side-lying-clam'}]},
+    {name:'4. Side-lying hip abduction — 3x12/lado', focus:'Glúteo médio', series:'<span>12 esq → 12 dir</span> 20s → <span>12 esq → 12 dir</span> 20s → <span>12 esq → 12 dir</span> 30s', notes:['Deitado de lado, perna de baixo ligeiramente flectida','Levantar a perna de cima (30-40°), manter reta','Não rodar a anca para trás','Controlar a descida (não deixar cair)'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/mini-loop-band-side-lying-hip-abduction'},{label:'Vídeo 2',url:'https://fitnessvolt.com/side-plank-hip-abduction/'}]},
+    {name:'5. Calf raises (bilateral) — 3x15', focus:'Gémeos — manutenção', series:'<span>15 reps</span> 20s → <span>15 reps</span> 20s → <span>15 reps</span> 30s', notes:['Pés à largura das ancas','Subir até à ponta dos pés, descer controlado','Amplitude completa (calcanhar abaixo do nível se em degrau)','Ritmo: 2s subir, 2s descer'], links:[{label:'Vídeo 1',url:'https://fitbod.me/exercises/calf-raise'},{label:'Vídeo 2',url:'https://fitnessvolt.com/dumbbell-standing-calf-raise/'}]},
+    {name:'6. Prancha frontal — 3x30-45s', focus:'Core', series:'<span>30-45s</span> 20s → <span>30-45s</span> 20s → <span>30-45s</span> 30s', notes:['Cotovelos debaixo dos ombros','Corpo em linha recta','Apertar abdominais e glúteos','Se 45s for fácil, progredir para 60s (semana 7+)'], links:[{label:'Vídeo 1',url:'https://fitnessvolt.com/front-plank/'},{label:'Vídeo 2',url:'https://fitbod.me/exercises/plank'}]},
+    {name:'7. Prancha lateral — 3x20-30s/lado', focus:'Oblíquos + estabilidade', series:'<span>20-30s esq → dir</span> 20s → <span>20-30s esq → dir</span> 20s → <span>20-30s esq → dir</span>', notes:['Cotovelo debaixo do ombro, corpo em linha','Anca não pode cair para o chão','Se difícil, apoiar joelho de baixo','Se 30s for fácil, progredir para 40s (semana 7+)'], links:[{label:'Vídeo 1',url:'https://fitnessvolt.com/side-plank/'},{label:'Vídeo 2',url:'https://fitbod.me/exercises/side-plank-lift'}]}
   ]
 };
 
 function getStrengthContent(type, weekIdx, dayIdx) {
   const exercises = STRENGTH_EXERCISES[type];
   const format = type === 'forca' 
-    ? '3 séries seguidas do mesmo exercício. Descanso 30s entre séries, 45s entre exercícios.'
-    : '3 séries seguidas do mesmo exercício. Descanso 20s entre séries, 30s entre exercícios. Sessão leve — prepara para o long run de sábado.';
+    ? '3 séries seguidas do mesmo exercício. Descanso <strong>30s</strong> entre séries, <strong>45s</strong> entre exercícios.'
+    : '3 séries seguidas do mesmo exercício. Descanso <strong>20s</strong> entre séries, <strong>30s</strong> entre exercícios. Sessão leve — prepara para o long run de sábado.';
   const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
   let html = `<h3>Formato</h3><p>${format}</p><h3>Exercícios</h3>`;
   exercises.forEach((ex, i) => {
     const key = `ex-${weekIdx}-${dayIdx}-${i}`;
     const isDone = exCompleted[key];
     const checkedClass = isDone ? 'checked' : '';
-    html += `<div class="exercise-item">
-      <button class="ex-check ${checkedClass}" onclick="event.preventDefault();event.stopPropagation();toggleExercise('${key}')">✓</button>
-      <a href="${ex.link}" target="_blank" class="exercise-info" style="text-decoration:none;color:inherit;">
-        <div>
-          <div class="exercise-name">${ex.name} ▶</div>
-          <div class="exercise-detail">${ex.detail}</div>
+    const notesHtml = ex.notes.map(n => `<li>${n}</li>`).join('');
+    const linksHtml = ex.links.map(l => `<a href="${l.url}" target="_blank" style="display:inline-block;background:#0f3460;color:#4ecca3;font-size:0.8rem;padding:5px 10px;border-radius:6px;margin-right:6px;margin-top:6px;text-decoration:none;">▶ ${l.label}</a>`).join('');
+    html += `<div class="exercise-item" style="flex-direction:column;align-items:stretch;padding:14px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="ex-check ${checkedClass}" onclick="event.preventDefault();event.stopPropagation();toggleExercise('${key}')">✓</button>
+        <div style="flex:1;">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-detail" style="color:#4ecca3;">${ex.focus}</div>
         </div>
-      </a>
+      </div>
+      <div style="margin-top:8px;font-size:0.85rem;opacity:0.8;line-height:1.8;">${ex.series}</div>
+      <ul style="margin-top:8px;font-size:0.85rem;opacity:0.7;line-height:1.6;padding-left:16px;">${notesHtml}</ul>
+      <div style="margin-top:4px;">${linksHtml}</div>
     </div>`;
   });
   return html;
@@ -1207,15 +1219,6 @@ function navTo(page) {
   toggleNav();
   if (page === 'plano') {
     window.scrollTo({top: 0, behavior: 'smooth'});
-  } else if (page === 'forca') {
-    // Find next Monday strength in current week
-    const week = PLAN[currentWeek];
-    const dayIdx = week.days.findIndex(d => d.type === 'strength' && d.desc.includes('Força'));
-    if (dayIdx >= 0) openOverlay(currentWeek, dayIdx);
-  } else if (page === 'ativacao') {
-    const week = PLAN[currentWeek];
-    const dayIdx = week.days.findIndex(d => d.type === 'strength' && d.desc.includes('Ativação'));
-    if (dayIdx >= 0) openOverlay(currentWeek, dayIdx);
   }
 }
 
