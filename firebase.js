@@ -88,10 +88,11 @@ function pullFromCloud() {
         localStorage.setItem('maratona_' + key, JSON.stringify(merged));
       }
     });
-    // Refresh UI
+    // Refresh UI (keep current week position)
     if (typeof completed !== 'undefined') completed = JSON.parse(localStorage.getItem('maratona_completed') || '{}');
     if (typeof renderWeek === 'function') renderWeek();
     if (typeof renderDay === 'function') renderDay();
+    if (typeof renderSupps === 'function') renderSupps();
   });
 }
 

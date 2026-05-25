@@ -199,13 +199,16 @@ function getPhase(weekIdx) {
   return {name:'Taper', protein:'1,8 g/kg (~115g/dia)'};
 }
 
-const PLAN_START = new Date('2026-05-19');
+const PLAN_START = new Date(2026, 4, 18); // 18 Mai 2026 (local)
 let currentWeek = 0;
 let currentDayIdx = 0;
 
 function getCurrentWeekIndex() {
   const now = new Date();
-  const diff = now - PLAN_START;
+  now.setHours(0,0,0,0);
+  const start = new Date(PLAN_START);
+  start.setHours(0,0,0,0);
+  const diff = now - start;
   const wk = Math.floor(diff / (7*24*60*60*1000));
   return Math.max(0, Math.min(wk, 24));
 }
