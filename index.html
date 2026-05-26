@@ -688,15 +688,32 @@ const WORKOUT_DETAILS = {
 
 let STRENGTH_EXERCISES = { forca: [], ativacao: [] };
 
-// Load exercises from external JSON
-fetch('./exercises.json')
-  .then(r => r.json())
-  .then(data => { STRENGTH_EXERCISES = data; renderWeek(); })
-  .catch(() => console.warn('exercises.json not loaded'));
+// Load exercises from external JSON and resolve references
+function loadExercises() {
+  return fetch('./exercises.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      const catalog = data.exercises;
+      STRENGTH_EXERCISES = {
+        forca: data.sessions.forca.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` })),
+        ativacao: data.sessions.ativacao.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` }))
+      };
+      renderWeek();
+    })
+    .catch(e => console.warn('exercises.json not loaded:', e));
+}
+loadExercises();
 
 
 function getStrengthContent(type, weekIdx, dayIdx) {
   const exercises = STRENGTH_EXERCISES[type];
+  if (!exercises || exercises.length === 0) {
+    // Try to reload exercises and re-open overlay
+    loadExercises().then(() => {
+      if (STRENGTH_EXERCISES[type].length > 0) openOverlay(weekIdx, dayIdx);
+    });
+    return '<p style="opacity:0.6;">A carregar exercícios...</p>';
+  }
   const format = type === 'forca' 
     ? '3 séries seguidas do mesmo exercício. Descanso <strong>30s</strong> entre séries, <strong>45s</strong> entre exercícios.'
     : '3 séries seguidas do mesmo exercício. Descanso <strong>20s</strong> entre séries, <strong>30s</strong> entre exercícios. Sessão leve — prepara para o long run de sábado.';
