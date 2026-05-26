@@ -1,4 +1,4 @@
-{
+const EXERCISES_DATA = {
   "exercises": {
     "single-leg-deadlift": {
       "name": "Peso morto unilateral (Single-leg deadlift) — 3x10/lado",
@@ -11,8 +11,14 @@
         "Se perder equilíbrio, tocar o pé no chão e recomeçar"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitnessvolt.com/single-leg-romanian-deadlift/" },
-        { "label": "Vídeo 2", "url": "https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitnessvolt.com/single-leg-romanian-deadlift/"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift"
+        }
       ]
     },
     "step-ups": {
@@ -26,9 +32,18 @@
         "Se sentir dor na anca direita, reduzir altura do banco"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitbod.me/exercises/step-up" },
-        { "label": "Vídeo 2", "url": "https://exrx.net/WeightExercises/Quadriceps/BBStepUp" },
-        { "label": "Vídeo 3", "url": "https://fitnessvolt.com/single-leg-step-up/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitbod.me/exercises/step-up"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://exrx.net/WeightExercises/Quadriceps/BBStepUp"
+        },
+        {
+          "label": "Vídeo 3",
+          "url": "https://fitnessvolt.com/single-leg-step-up/"
+        }
       ]
     },
     "pontes-gluteo-unilateral": {
@@ -42,8 +57,14 @@
         "Não deixar a anca rodar para o lado"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitbod.me/exercises/single-leg-glute-bridge" },
-        { "label": "Vídeo 2", "url": "https://fitnessvolt.com/24519/single-leg-glute-bridge/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitbod.me/exercises/single-leg-glute-bridge"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitnessvolt.com/24519/single-leg-glute-bridge/"
+        }
       ]
     },
     "calf-raises-unilateral": {
@@ -57,8 +78,14 @@
         "Apoiar a mão na parede para equilíbrio"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise" },
-        { "label": "Vídeo 2", "url": "https://fitnessvolt.com/cable-standing-calf-raise-guide/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitnessvolt.com/cable-standing-calf-raise-guide/"
+        }
       ]
     },
     "prancha-frontal": {
@@ -72,8 +99,14 @@
         "Se 45s for fácil, progredir para 60s (semana 7+)"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitnessvolt.com/front-plank/" },
-        { "label": "Vídeo 2", "url": "https://fitbod.me/exercises/plank" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitnessvolt.com/front-plank/"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitbod.me/exercises/plank"
+        }
       ]
     },
     "prancha-lateral": {
@@ -87,8 +120,14 @@
         "Se 30s for fácil, progredir para 40s (semana 7+)"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitnessvolt.com/side-plank/" },
-        { "label": "Vídeo 2", "url": "https://fitbod.me/exercises/side-plank-lift" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitnessvolt.com/side-plank/"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitbod.me/exercises/side-plank-lift"
+        }
       ]
     },
     "pontes-gluteo-bilateral": {
@@ -102,8 +141,14 @@
         "Não subir a anca em demasia; pés perto do corpo"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitbod.me/exercises/hip-thrust-ac1b456c-4d43-4cbd-bcdc-a8a519852fdd" },
-        { "label": "Vídeo 2", "url": "https://fitnessvolt.com/glute-bridge/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitbod.me/exercises/hip-thrust-ac1b456c-4d43-4cbd-bcdc-a8a519852fdd"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitnessvolt.com/glute-bridge/"
+        }
       ]
     },
     "clamshells": {
@@ -118,8 +163,14 @@
         "Exercício chave para a tendinopatia do glúteo médio"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://liftmanual.com/side-lying-clam/" },
-        { "label": "Vídeo 2", "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-clam" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://liftmanual.com/side-lying-clam/"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-clam"
+        }
       ]
     },
     "hip-abduction": {
@@ -133,8 +184,14 @@
         "Controlar a descida (não deixar cair)"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-hip-abduction" },
-        { "label": "Vídeo 2", "url": "https://fitnessvolt.com/side-plank-hip-abduction/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-hip-abduction"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitnessvolt.com/side-plank-hip-abduction/"
+        }
       ]
     },
     "calf-raises-bilateral": {
@@ -148,8 +205,14 @@
         "Ritmo: 2s subir, 2s descer"
       ],
       "links": [
-        { "label": "Vídeo 1", "url": "https://fitbod.me/exercises/calf-raise" },
-        { "label": "Vídeo 2", "url": "https://fitnessvolt.com/dumbbell-standing-calf-raise/" }
+        {
+          "label": "Vídeo 1",
+          "url": "https://fitbod.me/exercises/calf-raise"
+        },
+        {
+          "label": "Vídeo 2",
+          "url": "https://fitnessvolt.com/dumbbell-standing-calf-raise/"
+        }
       ]
     }
   },
@@ -172,4 +235,4 @@
       "prancha-lateral"
     ]
   }
-}
+};

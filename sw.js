@@ -3,7 +3,7 @@ const ASSETS = [
   './',
   './index.html',
   './suplementos.html',
-  './exercises.json',
+  './exercises-data.js',
   './version.js',
   './firebase.js',
   './manifest.json'

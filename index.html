@@ -436,6 +436,7 @@
     <div class="overlay-content" id="overlayContent"></div>
   </div>
 
+  <script src="exercises-data.js"></script>
   <script>
 const PLAN = [
   { week:1, dates:"18-24 Mai", km:29, phase:"Base", note:"", days:[
@@ -688,21 +689,22 @@ const WORKOUT_DETAILS = {
 
 let STRENGTH_EXERCISES = { forca: [], ativacao: [] };
 
-// Load exercises from external JSON and resolve references
-function loadExercises() {
-  return fetch('./exercises.json')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(data => {
-      const catalog = data.exercises;
-      STRENGTH_EXERCISES = {
-        forca: data.sessions.forca.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` })),
-        ativacao: data.sessions.ativacao.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` }))
-      };
-      renderWeek();
-    })
-    .catch(e => console.warn('exercises.json not loaded:', e));
+// Resolve exercise data from catalog + sessions structure
+function resolveExercises(data) {
+  const catalog = data.exercises;
+  STRENGTH_EXERCISES = {
+    forca: data.sessions.forca.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` })),
+    ativacao: data.sessions.ativacao.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` }))
+  };
 }
-loadExercises();
+
+// Load exercises from inline script
+function loadExercises() {
+  if (typeof EXERCISES_DATA !== 'undefined') {
+    resolveExercises(EXERCISES_DATA);
+  }
+  return Promise.resolve();
+}
 
 
 function getStrengthContent(type, weekIdx, dayIdx) {
@@ -1161,6 +1163,7 @@ document.addEventListener('touchend', e => {
 });
 
 // Init
+loadExercises();
 currentWeek = getCurrentWeekIndex();
 renderWeek();
 
