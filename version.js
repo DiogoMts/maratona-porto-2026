@@ -1,4 +1,4 @@
-const APP_VERSION = '0.2.45';
+const APP_VERSION = '0.2.48';
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.app-version').forEach(el => el.textContent = `v${APP_VERSION}`);
 });
