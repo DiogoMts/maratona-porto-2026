@@ -134,8 +134,16 @@
       width: 1px;
       background: rgba(255,255,255,0.1);
     }
-    .stat .value { font-size: 1.4rem; font-weight: 700; color: #4ecca3; }
-    .stat .label { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
+    .stat .value { font-size: 1.4rem; font-weight: 700; }
+    .stat:nth-child(1) .value { color: #4ecca3; }
+    .stat:nth-child(2) .value { color: #f9a825; }
+    .stat:nth-child(3) .value { color: #7b68ee; }
+    .stat:nth-child(4) .value { color: #e94560; }
+    .stat .label { font-size: 0.75rem; margin-top: 2px; opacity: 0.85; }
+    .stat:nth-child(1) .label { color: #4ecca3; }
+    .stat:nth-child(2) .label { color: #f9a825; }
+    .stat:nth-child(3) .label { color: #7b68ee; }
+    .stat:nth-child(4) .label { color: #e94560; }
     .week-nav {
       display: flex;
       align-items: center;
@@ -208,6 +216,22 @@
       background: #4ecca3;
       border-color: #4ecca3;
       color: #1a1a2e;
+    }
+    .check-btn.core-check {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      border-color: #f9a825;
+    }
+    .check-btn.core-check.checked {
+      background: #f9a825;
+      border-color: #f9a825;
+      color: #1a1a2e;
+    }
+    .check-btn.core-check.partial {
+      background: transparent;
+      border-color: #f9a825;
+      color: #f9a825;
     }
     .day-info { flex: 1; min-width: 0; }
     .day-header {
@@ -696,14 +720,15 @@ const WORKOUT_DETAILS = {
   }
 };
 
-let STRENGTH_EXERCISES = { forca: [], ativacao: [] };
+let STRENGTH_EXERCISES = { forca: [], ativacao: [], core: [] };
 
 // Resolve exercise data from catalog + sessions structure
 function resolveExercises(data) {
   const catalog = data.exercises;
   STRENGTH_EXERCISES = {
     forca: data.sessions.forca.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` })),
-    ativacao: data.sessions.ativacao.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` }))
+    ativacao: data.sessions.ativacao.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` })),
+    core: data.sessions.core.map((id, i) => ({ ...catalog[id], name: `${i+1}. ${catalog[id].name}` }))
   };
 }
 
@@ -749,7 +774,71 @@ function getStrengthContent(type, weekIdx, dayIdx) {
       <div style="margin-top:4px;">${linksHtml}</div>
     </div>`;
   });
+
   return html;
+}
+
+function getCoreContent(weekIdx, dayIdx) {
+  const exercises = STRENGTH_EXERCISES.core;
+  if (!exercises || exercises.length === 0) return '';
+  const coreCompleted = JSON.parse(localStorage.getItem('maratona_core') || '{}');
+  let html = `<h3 style="margin-top:20px;color:#f9a825;">⚡ Core Opcional (5-8 min)</h3>
+    <p style="font-size:0.85rem;opacity:0.7;margin-bottom:10px;">Zero equipamento, tudo no chão. Adicionar no final da sessão.</p>`;
+  exercises.forEach((ex, i) => {
+    const key = `core-${weekIdx}-${dayIdx}-${i}`;
+    const isDone = coreCompleted[key];
+    const checkedClass = isDone ? 'checked' : '';
+    const notesHtml = ex.notes.map(n => `<li>${n}</li>`).join('');
+    const linksHtml = ex.links.map(l => `<a href="${l.url}" target="_blank" style="display:inline-block;background:#0f3460;color:#f9a825;font-size:0.8rem;padding:5px 10px;border-radius:6px;margin-right:6px;margin-top:6px;text-decoration:none;">▶ ${l.label}</a>`).join('');
+    html += `<div class="exercise-item" style="flex-direction:column;align-items:stretch;padding:14px;border-left-color:#f9a825;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="ex-check ${checkedClass}" onclick="event.preventDefault();event.stopPropagation();toggleCoreExercise('${key}')" style="${isDone ? '' : 'border-color:#f9a825;'}${isDone ? 'background:#f9a825;border-color:#f9a825;color:#1a1a2e;' : ''}">✓</button>
+        <div style="flex:1;">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-detail" style="color:#f9a825;">${ex.focus}</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:0.85rem;opacity:0.8;line-height:1.8;">${ex.series}</div>
+      <ul style="margin-top:8px;font-size:0.85rem;opacity:0.7;line-height:1.6;padding-left:16px;">${notesHtml}</ul>
+      <div style="margin-top:4px;">${linksHtml}</div>
+    </div>`;
+  });
+  return html;
+}
+
+function toggleCoreExercise(key) {
+  const coreCompleted = JSON.parse(localStorage.getItem('maratona_core') || '{}');
+  coreCompleted[key] = !coreCompleted[key];
+  localStorage.setItem('maratona_core', JSON.stringify(coreCompleted));
+  const overlay = document.getElementById('overlay');
+  const weekIdx = parseInt(overlay.dataset.week);
+  const dayIdx = parseInt(overlay.dataset.day);
+  openCoreOverlay(weekIdx, dayIdx);
+  renderWeek();
+}
+
+function toggleCore(dayKey) {
+  if (typeof canEdit === 'function' && !canEdit()) { alert('Faz login para editar'); return; }
+  const [weekIdx, dayIdx] = dayKey.split('-').map(Number);
+  const totalCore = STRENGTH_EXERCISES.core.length;
+  const coreCompleted = JSON.parse(localStorage.getItem('maratona_core') || '{}');
+  
+  // Check if all core exercises are done
+  let allDone = true;
+  for (let j = 0; j < totalCore; j++) {
+    if (!coreCompleted[`core-${weekIdx}-${dayIdx}-${j}`]) { allDone = false; break; }
+  }
+
+  // Toggle all
+  for (let j = 0; j < totalCore; j++) {
+    if (allDone) {
+      delete coreCompleted[`core-${weekIdx}-${dayIdx}-${j}`];
+    } else {
+      coreCompleted[`core-${weekIdx}-${dayIdx}-${j}`] = true;
+    }
+  }
+  localStorage.setItem('maratona_core', JSON.stringify(coreCompleted));
+  renderWeek();
 }
 
 function toggleExercise(key) {
@@ -923,6 +1012,19 @@ function openOverlay(weekIdx, dayIdx) {
   document.getElementById('overlay').dataset.key = key;
   document.getElementById('overlay').dataset.week = weekIdx;
   document.getElementById('overlay').dataset.day = dayIdx;
+  document.getElementById('overlay').dataset.mode = 'main';
+}
+
+function openCoreOverlay(weekIdx, dayIdx) {
+  const content = getCoreContent(weekIdx, dayIdx);
+  if (!content) return;
+  document.getElementById('overlayTitle').textContent = '⚡ Core Opcional';
+  document.getElementById('overlayContent').innerHTML = content;
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('overlay').dataset.key = `${weekIdx}-${dayIdx}`;
+  document.getElementById('overlay').dataset.week = weekIdx;
+  document.getElementById('overlay').dataset.day = dayIdx;
+  document.getElementById('overlay').dataset.mode = 'core';
 }
 
 function toggleFromOverlay(key) {
@@ -1055,6 +1157,7 @@ function renderWeek() {
 
   const container = document.getElementById('weekContent');
   const exCompleted = JSON.parse(localStorage.getItem('maratona_exercises') || '{}');
+  const coreCompleted = JSON.parse(localStorage.getItem('maratona_core') || '{}');
   container.innerHTML = week.days.map((day, i) => {
     const key = `${currentWeek}-${i}`;
     const isDone = completed[key];
@@ -1070,25 +1173,51 @@ function renderWeek() {
       }
       if (count > 0) checkedClass = 'partial';
     }
+    // Core optional check for strength days
+    let coreCheckHtml = '';
+    let coreInfoHtml = '';
     const kmText = day.km > 0 ? `${day.km} km` : '';
     const clickable = getWorkoutDetail(day, currentWeek, i) ? `onclick="openOverlay(${currentWeek},${i})"` : '';
     const cursorStyle = getWorkoutDetail(day, currentWeek, i) ? 'style="cursor:pointer"' : '';
+    if (day.type === 'strength') {
+      const totalCore = STRENGTH_EXERCISES.core.length;
+      let coreCount = 0;
+      for (let j = 0; j < totalCore; j++) {
+        if (coreCompleted[`core-${currentWeek}-${i}-${j}`]) coreCount++;
+      }
+      let coreClass = '';
+      if (coreCount === totalCore && totalCore > 0) coreClass = 'checked';
+      else if (coreCount > 0) coreClass = 'partial';
+      coreCheckHtml = `<button class="check-btn core-check ${coreClass}" onclick="event.stopPropagation();toggleCore('${currentWeek}-${i}')" title="Core opcional">C</button>`;
+      coreInfoHtml = `<div>
+        <div class="day-type" style="font-size:0.9rem;color:#f9a825;">⚡ Core Opcional</div>
+        <div class="day-desc" style="font-size:0.8rem;">4 exercícios — 5-8 min</div>
+      </div>`;
+    }
     const isRest = day.type === 'rest';
     const checkBtn = isRest ? '<div style="width:28px"></div>' :
       `<button class="check-btn ${checkedClass}" onclick="event.stopPropagation();toggleDay('${key}')">✓</button>`;
     return `
       <div class="day-card ${doneClass}" data-type="${day.type}" ${cursorStyle}>
-        ${checkBtn}
-        <div class="day-info" ${clickable}>
-          <div class="day-header">
-            <span class="day-name">${formatDay(day.day)}</span>
-            <span class="day-km">${kmText}</span>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            ${checkBtn}
+            <div class="day-info" ${clickable}>
+              <div class="day-header">
+                <span class="day-name">${formatDay(day.day)}</span>
+                <span class="day-km">${kmText}</span>
+              </div>
+              <div class="day-type">${formatType(day.type)}</div>
+              <div class="day-desc">${day.desc}</div>
+              <div class="day-pace">${day.pace}</div>
+              ${getShoe(day.type) ? `<div class="day-pace" style="color:#4ecca3;">👟 ${getShoe(day.type)}</div>` : ''}
+              ${getNote(`${currentWeek}-${i}`) ? `<div class="day-note">📝 ${getNote(`${currentWeek}-${i}`).substring(0,40)}${getNote(`${currentWeek}-${i}`).length > 40 ? '...' : ''}</div>` : ''}
+            </div>
           </div>
-          <div class="day-type">${formatType(day.type)}</div>
-          <div class="day-desc">${day.desc}</div>
-          <div class="day-pace">${day.pace}</div>
-          ${getShoe(day.type) ? `<div class="day-pace" style="color:#4ecca3;">👟 ${getShoe(day.type)}</div>` : ''}
-          ${getNote(`${currentWeek}-${i}`) ? `<div class="day-note">📝 ${getNote(`${currentWeek}-${i}`).substring(0,40)}${getNote(`${currentWeek}-${i}`).length > 40 ? '...' : ''}</div>` : ''}
+          ${coreCheckHtml ? `<div style="display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);cursor:pointer;" onclick="openCoreOverlay(${currentWeek},${i})">
+            ${coreCheckHtml}
+            ${coreInfoHtml}
+          </div>` : ''}
         </div>
       </div>
     `;
@@ -1245,6 +1374,7 @@ function exportJSON() {
   const data = {
     completed: JSON.parse(localStorage.getItem('maratona_completed') || '{}'),
     exercises: JSON.parse(localStorage.getItem('maratona_exercises') || '{}'),
+    core: JSON.parse(localStorage.getItem('maratona_core') || '{}'),
     notes: JSON.parse(localStorage.getItem('maratona_notes') || '{}'),
     supps: JSON.parse(localStorage.getItem('maratona_supps') || '{}'),
     exportDate: new Date().toISOString()

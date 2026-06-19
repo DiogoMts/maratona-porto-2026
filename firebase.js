@@ -64,12 +64,13 @@ function pushToCloud() {
   const data = {
     completed: localStorage.getItem('maratona_completed') || '{}',
     exercises: localStorage.getItem('maratona_exercises') || '{}',
+    core: localStorage.getItem('maratona_core') || '{}',
     notes: localStorage.getItem('maratona_notes') || '{}',
     supps: localStorage.getItem('maratona_supps') || '{}',
     lastSync: new Date().toISOString()
   };
   // Only push if there's real data
-  if (data.completed === '{}' && data.exercises === '{}' && data.notes === '{}' && data.supps === '{}') return;
+  if (data.completed === '{}' && data.exercises === '{}' && data.core === '{}' && data.notes === '{}' && data.supps === '{}') return;
   firebaseDb.ref('users/' + currentUser.uid).set(data);
 }
 
@@ -80,7 +81,7 @@ function pullFromCloud() {
     const data = snapshot.val();
     if (!data) return;
     // Merge: local + cloud, cloud wins on conflicts
-    ['completed', 'exercises', 'notes', 'supps'].forEach(key => {
+    ['completed', 'exercises', 'core', 'notes', 'supps'].forEach(key => {
       const local = JSON.parse(localStorage.getItem('maratona_' + key) || '{}');
       const cloud = JSON.parse(data[key] || '{}');
       if (Object.keys(cloud).length > 0) {

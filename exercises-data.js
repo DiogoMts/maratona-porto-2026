@@ -12,11 +12,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/single-leg-romanian-deadlift/"
         },
         {
-          "label": "Vídeo 2",
+          "label": "ExRx",
           "url": "https://exrx.net/WeightExercises/GluteusMaximus/BWSingleLegStiffLegDeadlift"
         }
       ]
@@ -33,15 +33,15 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/step-up"
         },
         {
-          "label": "Vídeo 2",
+          "label": "ExRx",
           "url": "https://exrx.net/WeightExercises/Quadriceps/BBStepUp"
         },
         {
-          "label": "Vídeo 3",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/single-leg-step-up/"
         }
       ]
@@ -58,11 +58,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/single-leg-glute-bridge"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/24519/single-leg-glute-bridge/"
         }
       ]
@@ -79,11 +79,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "ExRx",
           "url": "https://exrx.net/WeightExercises/Gastrocnemius/DBSingleLegCalfRaise"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/cable-standing-calf-raise-guide/"
         }
       ]
@@ -100,11 +100,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/front-plank/"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/plank"
         }
       ]
@@ -121,11 +121,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/side-plank/"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/side-plank-lift"
         }
       ]
@@ -142,11 +142,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/hip-thrust-ac1b456c-4d43-4cbd-bcdc-a8a519852fdd"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/glute-bridge/"
         }
       ]
@@ -164,11 +164,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Lift Manual",
           "url": "https://liftmanual.com/side-lying-clam/"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-clam"
         }
       ]
@@ -185,11 +185,11 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/mini-loop-band-side-lying-hip-abduction"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/side-plank-hip-abduction/"
         }
       ]
@@ -206,12 +206,92 @@ const EXERCISES_DATA = {
       ],
       "links": [
         {
-          "label": "Vídeo 1",
+          "label": "Fitbod",
           "url": "https://fitbod.me/exercises/calf-raise"
         },
         {
-          "label": "Vídeo 2",
+          "label": "Fitness Volt",
           "url": "https://fitnessvolt.com/dumbbell-standing-calf-raise/"
+        }
+      ]
+    },
+    "dead-bug": {
+      "name": "Dead bug — 3x8 cada lado",
+      "focus": "Anti-extensão — core profundo",
+      "series": "<span>8 esq → 8 dir</span> 20s → <span>8 esq → 8 dir</span> 20s → <span>8 esq → 8 dir</span>",
+      "notes": [
+        "Manter lombar colada ao chão durante todo o movimento",
+        "Começar com pernas a 90°; progredir para extensão completa da perna",
+        "Movimento lento e controlado — sem pressa",
+        "Se a lombar descolar do chão, reduzir amplitude"
+      ],
+      "links": [
+        {
+          "label": "Fitbod",
+          "url": "https://fitbod.me/exercises/dead-bug"
+        },
+        {
+          "label": "Fitness Volt",
+          "url": "https://fitnessvolt.com/dead-bug-exercise/"
+        }
+      ]
+    },
+    "bird-dog": {
+      "name": "Bird dog — 3x8 cada lado",
+      "focus": "Anti-rotação — estabilidade lombar",
+      "series": "<span>8 esq → 8 dir</span> 20s → <span>8 esq → 8 dir</span> 20s → <span>8 esq → 8 dir</span>",
+      "notes": [
+        "Segurar 2-3s no topo, manter anca nivelada",
+        "Não rodar a anca — imaginar um copo de água nas costas",
+        "Progressão: adicionar pausa de 5s ou toque cotovelo-joelho entre reps",
+        "Ativar abdominais antes de estender"
+      ],
+      "links": [
+        {
+          "label": "Fitbod",
+          "url": "https://fitbod.me/exercises/bird-dog"
+        }
+      ]
+    },
+    "plank-shoulder-tap": {
+      "name": "Plank com shoulder tap — 3x10 cada lado",
+      "focus": "Anti-rotação + estabilidade escapular",
+      "series": "<span>10 esq → 10 dir</span> 20s → <span>10 esq → 10 dir</span> 20s → <span>10 esq → 10 dir</span>",
+      "notes": [
+        "Posição de prancha alta (braços esticados)",
+        "Tocar o ombro oposto com a mão, minimizando balanço lateral",
+        "Afastar os pés para facilitar, juntar para dificultar",
+        "Manter ancas paralelas ao chão"
+      ],
+      "links": [
+        {
+          "label": "Fitbod",
+          "url": "https://fitbod.me/exercises/plank-shoulder-taps"
+        }
+      ]
+    },
+    "hollow-body-hold": {
+      "name": "Hollow body hold — 3x20-30s",
+      "focus": "Transverso abdominal — ativação profunda",
+      "series": "<span>20-30s</span> 20s → <span>20-30s</span> 20s → <span>20-30s</span>",
+      "notes": [
+        "Deitado de costas, braços acima da cabeça",
+        "Lombar colada ao chão, pernas e ombros ligeiramente levantados",
+        "Começar com joelhos fletidos; progredir para pernas estendidas",
+        "Se lombar descolar, dobrar ligeiramente os joelhos"
+      ],
+      "links": [
+        {
+          "label": "Vídeo (stream)",
+          "url": "https://stream.mux.com/U01x7nz2oiFi00CXbacwALEdHqggGLe4yAoIgQ94019Y4Y.m3u8"
+        },
+        {
+          "label": "Fitness Volt",
+          "url": "https://fitnessvolt.com/hollow-hold/"
+        },
+        {
+          "label": "Caliverse",
+          "url": "https://www.caliverse.app/exercises/hollow-body-hold-32"
         }
       ]
     }
@@ -233,6 +313,12 @@ const EXERCISES_DATA = {
       "calf-raises-bilateral",
       "prancha-frontal",
       "prancha-lateral"
+    ],
+    "core": [
+      "dead-bug",
+      "bird-dog",
+      "plank-shoulder-tap",
+      "hollow-body-hold"
     ]
   }
 };

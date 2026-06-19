@@ -345,6 +345,7 @@ function exportJSON() {
   const data = {
     completed: JSON.parse(localStorage.getItem('maratona_completed') || '{}'),
     exercises: JSON.parse(localStorage.getItem('maratona_exercises') || '{}'),
+    core: JSON.parse(localStorage.getItem('maratona_core') || '{}'),
     notes: JSON.parse(localStorage.getItem('maratona_notes') || '{}'),
     supps: JSON.parse(localStorage.getItem('maratona_supps') || '{}'),
     exportDate: new Date().toISOString()
