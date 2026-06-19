@@ -118,15 +118,24 @@
       transition: width 0.3s;
     }
     .stats {
-      display: flex;
-      justify-content: space-around;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       padding: 12px 16px;
       background: #16213e;
       border-bottom: 1px solid #0f3460;
     }
-    .stat { text-align: center; }
-    .stat .value { font-size: 1.5rem; font-weight: 700; color: #4ecca3; }
-    .stat .label { font-size: 0.8rem; opacity: 0.7; margin-top: 2px; }
+    .stat { text-align: center; position: relative; }
+    .stat:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .stat .value { font-size: 1.4rem; font-weight: 700; color: #4ecca3; }
+    .stat .label { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
     .week-nav {
       display: flex;
       align-items: center;
