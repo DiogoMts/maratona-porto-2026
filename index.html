@@ -179,8 +179,11 @@
       border-left: 4px solid #333;
       transition: opacity 0.2s;
     }
-    .day-card.done { opacity: 0.5; }
-    .day-card.done .day-desc { text-decoration: line-through; }
+    .day-card.done { }
+    .day-card.done .day-main { opacity: 0.5; }
+    .day-card.done .day-main .day-desc { text-decoration: line-through; }
+    .day-core.core-done { opacity: 0.5; }
+    .day-core.core-done .day-desc { text-decoration: line-through; }
     .day-card[data-type="easy"] { border-left-color: #4ecca3; }
     .day-card[data-type="mp"] { border-left-color: #f9a825; }
     .day-card[data-type="tempo"] { border-left-color: #ff6b35; }
@@ -1200,7 +1203,7 @@ function renderWeek() {
     return `
       <div class="day-card ${doneClass}" data-type="${day.type}" ${cursorStyle}>
         <div style="flex:1;">
-          <div style="display:flex;align-items:center;gap:12px;">
+          <div class="day-main" style="display:flex;align-items:center;gap:12px;">
             ${checkBtn}
             <div class="day-info" ${clickable}>
               <div class="day-header">
@@ -1214,7 +1217,7 @@ function renderWeek() {
               ${getNote(`${currentWeek}-${i}`) ? `<div class="day-note">📝 ${getNote(`${currentWeek}-${i}`).substring(0,40)}${getNote(`${currentWeek}-${i}`).length > 40 ? '...' : ''}</div>` : ''}
             </div>
           </div>
-          ${coreCheckHtml ? `<div style="display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);cursor:pointer;" onclick="openCoreOverlay(${currentWeek},${i})">
+          ${coreCheckHtml ? `<div class="day-core${coreClass === 'checked' ? ' core-done' : ''}" style="display:flex;align-items:center;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);cursor:pointer;" onclick="openCoreOverlay(${currentWeek},${i})">
             ${coreCheckHtml}
             ${coreInfoHtml}
           </div>` : ''}
