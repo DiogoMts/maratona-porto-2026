@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e94560">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Maratona Porto 8 Novembro 2026</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏃</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; min-height: 100vh; padding-bottom: 40px; }
+    .nav-toggle { position: fixed; top: 12px; left: 12px; z-index: 300; background: #0f3460; border: none; color: #eee; width: 36px; height: 36px; border-radius: 8px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .sidenav { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #16213e; z-index: 250; transition: left 0.3s ease; overflow-y: auto; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
+    .sidenav.open { left: 0; }
+    .sidenav-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 240; }
+    .sidenav-overlay.open { display: block; }
+    .sidenav-header { padding: 16px 20px; border-bottom: 1px solid #0f3460; margin-bottom: 8px; }
+    .sidenav-header h2 { font-size: 1rem; }
+    .sidenav-header p { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
+    .sidenav-section { padding: 8px 0; }
+    .sidenav-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.5; padding: 8px 20px 4px; }
+    .sidenav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 0.9rem; color: #eee; text-decoration: none; cursor: pointer; border-left: 3px solid transparent; }
+    .sidenav-item:hover { background: #0f3460; }
+    .sidenav-item.active { border-left-color: #e94560; background: #0f3460; }
+    .sidenav-item .nav-icon { width: 20px; text-align: center; }
+    header { background: linear-gradient(135deg, #e94560, #0f3460); padding: 20px 16px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    header .subtitle { font-size: 0.8rem; opacity: 0.7; margin-top: 4px; }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); padding: 12px 16px; background: #16213e; border-bottom: 1px solid #0f3460; }
+    .stat { text-align: center; position: relative; }
+    .stat:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 15%; height: 70%; width: 1px; background: rgba(255,255,255,0.1); }
+    .stat .value { font-size: 1.3rem; font-weight: 700; }
+    .stat:nth-child(1) .value { color: #4ecca3; }
+    .stat:nth-child(2) .value { color: #f9a825; }
+    .stat:nth-child(3) .value { color: #7b68ee; }
+    .stat:nth-child(4) .value { color: #00bcd4; }
+    .stat .label { font-size: 0.72rem; margin-top: 2px; opacity: 0.8; }
+
+    .content { padding: 10px 12px; }
+    .section-hint { font-size: 0.78rem; opacity: 0.55; text-align: center; margin: 8px 0 14px; }
+
+    .wk-card { background: #16213e; border-radius: 12px; margin-bottom: 8px; padding: 14px; border-left: 4px solid #333; }
+    .wk-card.phase-Base { border-left-color: #4ecca3; }
+    .wk-card.phase-Desenvolvimento { border-left-color: #f9a825; }
+    .wk-card.phase-Específica { border-left-color: #e94560; }
+    .wk-card.phase-Reentrada { border-left-color: #7b68ee; }
+    .wk-card.phase-Taper { border-left-color: #00bcd4; }
+    .wk-card.phase-Férias { border-left-color: #8bc34a; }
+    .wk-card.phase-Prova { border-left-color: #ffd700; }
+    .wk-card.pending { opacity: 0.4; }
+
+    .wk-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .wk-title { font-size: 1rem; font-weight: 600; }
+    .wk-phase { font-size: 0.72rem; opacity: 0.6; }
+    .wk-period { font-size: 0.75rem; opacity: 0.6; }
+    .wk-note { font-size: 0.72rem; color: #f9a825; }
+
+    .wk-kmline { display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px; }
+    .wk-km { font-size: 0.95rem; }
+    .wk-km .real { font-weight: 700; color: #4ecca3; }
+    .wk-km .plan { opacity: 0.6; }
+    .wk-pct { font-size: 0.9rem; font-weight: 700; }
+    .wk-pct.good { color: #4ecca3; }
+    .wk-pct.ok { color: #f9a825; }
+    .wk-pct.low { color: #e94560; }
+    .wk-pct.over { color: #7b68ee; }
+
+    .wk-bar { background: rgba(255,255,255,0.08); border-radius: 6px; height: 6px; margin-top: 6px; overflow: hidden; }
+    .wk-bar .fill { height: 100%; border-radius: 6px; }
+    .wk-bar .fill.good { background: #4ecca3; }
+    .wk-bar .fill.ok { background: #f9a825; }
+    .wk-bar .fill.low { background: #e94560; }
+    .wk-bar .fill.over { background: #7b68ee; }
+
+    .wk-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .wk-chip { font-size: 0.72rem; background: #0f3460; border-radius: 6px; padding: 4px 8px; opacity: 0.9; }
+    .wk-chip .lbl { opacity: 0.6; }
+
+    .empty { text-align: center; opacity: 0.6; padding: 40px 20px; }
+  </style>
+</head>
+<body>
+  <button class="nav-toggle" onclick="toggleNav()">☰</button>
+  <div class="sidenav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+  <nav class="sidenav" id="sidenav">
+    <div class="sidenav-header">
+      <h2>🏃 Maratona Porto</h2>
+      <p>8 Novembro 2026 — Diogo Matos</p>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Navegação</div>
+      <div class="sidenav-item" onclick="window.location.href='index.html'"><span class="nav-icon">📅</span> Plano de treino</div>
+      <div class="sidenav-item" onclick="window.location.href='suplementos.html'"><span class="nav-icon">💊</span> Suplementos</div>
+      <div class="sidenav-item active"><span class="nav-icon">✅</span> Realizado</div>
+    </div>
+    <div class="sidenav-section">
+      <div class="sidenav-section-title">Info</div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;"><span class="nav-icon">ℹ️</span> <span class="app-version">v0.1.0</span></div>
+      <div class="sidenav-item" style="opacity:0.5;cursor:default;font-size:0.72rem;"><span class="nav-icon">🔄</span> <span id="genDate">—</span></div>
+    </div>
+    <div id="syncMenu"></div>
+  </nav>
+  <header>
+    <h1>✅ Realizado</h1>
+    <div class="subtitle">Plano vs. executado — dados Garmin</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="value" id="statKm">—</div><div class="label">Km real/plano</div></div>
+    <div class="stat"><div class="value" id="statPct">—</div><div class="label">Cumprimento</div></div>
+    <div class="stat"><div class="value" id="statRuns">—</div><div class="label">Corridas</div></div>
+    <div class="stat"><div class="value" id="statStrength">—</div><div class="label">Força</div></div>
+  </div>
+
+  <div class="section-hint" id="hint"></div>
+  <div class="content" id="weeks"></div>
+
+  <script>
+function toggleNav() {
+  document.getElementById('sidenav').classList.toggle('open');
+  document.getElementById('navOverlay').classList.toggle('open');
+}
+
+function pctClass(pct) {
+  if (pct == null) return '';
+  if (pct > 105) return 'over';
+  if (pct >= 95) return 'good';
+  if (pct >= 80) return 'ok';
+  return 'low';
+}
+
+function render(data) {
+  const s = data.summary;
+  document.getElementById('statKm').textContent = `${Math.round(s.cum_real_km)}/${Math.round(s.cum_plan_km)}`;
+  document.getElementById('statPct').textContent = s.cum_pct != null ? `${s.cum_pct}%` : '—';
+  document.getElementById('statRuns').textContent = s.plan_runs != null ? `${s.total_runs}/${s.plan_runs}` : s.total_runs;
+  document.getElementById('statStrength').textContent = s.plan_strength != null ? `${s.total_strength}/${s.plan_strength}` : s.total_strength;
+  document.getElementById('statPct').className = 'value';
+  document.getElementById('statPct').style.color = ({good:'#4ecca3',ok:'#f9a825',low:'#e94560',over:'#7b68ee'})[pctClass(s.cum_pct)] || '#f9a825';
+
+  document.getElementById('hint').textContent = `Semana ${data.current_week} de 25 · acumulado até à data`;
+  if (data.generated_at) {
+    document.getElementById('genDate').textContent = data.generated_at.replace('T', ' ').slice(0, 16);
+  }
+
+  const container = document.getElementById('weeks');
+  // ordem decrescente: semana mais recente primeiro
+  const weeks = [...data.weeks].sort((a, b) => b.week - a.week);
+  container.innerHTML = weeks.map(w => {
+    const pending = !w.started;
+    const cls = pctClass(w.pct);
+    const barW = w.pct != null ? Math.min(w.pct, 120) / 120 * 100 : 0;
+
+    // chips de métricas (só se houve dados)
+    let chips = '';
+    if (w.has_data) {
+      if (w.plan_long > 0 || w.real_long > 0) {
+        chips += `<span class="wk-chip"><span class="lbl">Long</span> ${w.plan_long}→<strong>${w.real_long}</strong> km</span>`;
+      }
+      chips += `<span class="wk-chip"><span class="lbl">Força</span> ${w.num_strength}/2</span>`;
+      if (w.hr_easy) chips += `<span class="wk-chip"><span class="lbl">FC easy</span> ${w.hr_easy}</span>`;
+      if (w.sleep_avg != null) chips += `<span class="wk-chip"><span class="lbl">Sono</span> ${w.sleep_avg}</span>`;
+    }
+
+    const noteHtml = w.note ? ` · <span class="wk-note">${w.note}</span>` : '';
+    const kmReal = pending ? '—' : w.real_km;
+    const pctHtml = (pending || w.pct == null) ? '' : `<span class="wk-pct ${cls}">${w.pct}%</span>`;
+
+    return `<div class="wk-card phase-${w.phase}${pending ? ' pending' : ''}">
+      <div class="wk-top">
+        <div>
+          <span class="wk-title">Semana ${w.week}</span>
+          <span class="wk-phase"> · ${w.phase}${noteHtml}</span>
+        </div>
+        <span class="wk-period">${w.period}</span>
+      </div>
+      <div class="wk-kmline">
+        <span class="wk-km"><span class="real">${kmReal}</span> <span class="plan">/ ${w.plan_km} km</span></span>
+        ${pctHtml}
+      </div>
+      ${pending ? '' : `<div class="wk-bar"><div class="fill ${cls}" style="width:${barW}%"></div></div>`}
+      ${chips ? `<div class="wk-meta">${chips}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+fetch('progresso.json?v=' + Date.now())
+  .then(r => { if (!r.ok) throw new Error('no data'); return r.json(); })
+  .then(render)
+  .catch(() => {
+    document.getElementById('weeks').innerHTML =
+      '<div class="empty">Sem dados de progresso ainda.<br>O ficheiro <code>progresso.json</code> é gerado a cada importação de dados Garmin.</div>';
+  });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+  </script>
+  <script src="firebase.js"></script>
+  <script>document.getElementById('syncMenu').innerHTML = getSyncMenuHTML();</script>
+  <script src="version.js"></script>
+</body>
+</html>
